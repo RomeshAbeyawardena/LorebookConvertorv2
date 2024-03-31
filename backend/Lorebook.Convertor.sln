@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lorebook.Convertor.Infrastructure", "Lorebook.Convertor.Infrastructure\Lorebook.Convertor.Infrastructure.csproj", "{0734968F-00D5-4F0E-BCAA-14BD09369648}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lorebook.Convertor", "Lorebook.Convertor\Lorebook.Convertor.csproj", "{37EA51BD-3C02-4CA2-9485-39ACB621789E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lorebook.Convertor.Domain", "Lorebook.Convertor.Domain\Lorebook.Convertor.Domain.csproj", "{61C8FBDB-2DD8-420B-9F08-7CE0DE81845D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0FD189BD-2E65-4C1B-B779-75676C03F932}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Users\romes\Downloads\Battle of Orleans (Sat Mar 30 2024).lorebook = ..\..\..\Users\romes\Downloads\Battle of Orleans (Sat Mar 30 2024).lorebook
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0734968F-00D5-4F0E-BCAA-14BD09369648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0734968F-00D5-4F0E-BCAA-14BD09369648}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0734968F-00D5-4F0E-BCAA-14BD09369648}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0734968F-00D5-4F0E-BCAA-14BD09369648}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37EA51BD-3C02-4CA2-9485-39ACB621789E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37EA51BD-3C02-4CA2-9485-39ACB621789E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37EA51BD-3C02-4CA2-9485-39ACB621789E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37EA51BD-3C02-4CA2-9485-39ACB621789E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61C8FBDB-2DD8-420B-9F08-7CE0DE81845D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61C8FBDB-2DD8-420B-9F08-7CE0DE81845D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61C8FBDB-2DD8-420B-9F08-7CE0DE81845D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61C8FBDB-2DD8-420B-9F08-7CE0DE81845D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEFE87CE-2360-4C69-8B97-5B1604688785}
+	EndGlobalSection
+EndGlobal
