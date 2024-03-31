@@ -6,11 +6,13 @@
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
     //import { computed } from "vue";
+    import { useSearchStore } from "../stores/searchStore";
+    const searchStore = useSearchStore();
     const entryStore = useEntryStore();
     const { isLorebookLoaded, filteredCategories,
         //selectedSearchItem 
     } = storeToRefs(entryStore);
-
+    
     //const itemRefs = ref([])
     //const type = computed(() => {
       //  return selectedSearchItem.value.includes(",")
@@ -18,6 +20,7 @@
     //});
 </script>
 <template>
+    {{ searchStore.getOrMapIndexes }}
     <Accordion v-if="isLorebookLoaded">
         <AccordionTab   :header="group.Category?.Name"
                         v-for="group in filteredCategories">
