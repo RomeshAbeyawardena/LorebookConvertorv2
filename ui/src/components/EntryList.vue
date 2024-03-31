@@ -5,14 +5,29 @@
     import EntryDetails from "./EntryDetails.vue";
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
-    //import { computed } from "vue";
+    import { watch } from "vue";
     import { useSearchStore } from "../stores/searchStore";
     const searchStore = useSearchStore();
     const entryStore = useEntryStore();
-    const { isLorebookLoaded, filteredCategories,
-        //selectedSearchItem 
+    const { isLorebookLoaded, filteredCategories, entryIndex,
+        selectedSearchItem, searchText, categoryIndex
     } = storeToRefs(entryStore);
-    
+
+    function isCollapsed(id:number) {
+        return entryIndex.value != id;
+    }
+
+    watch(selectedSearchItem, (value) => {
+        const ids = value.includes(",") 
+            ? value.split(",") : [value];
+        const indexEntry = searchStore.getOrMapIndexes.find(f => f.id == ids[0]);
+        console.log(ids, indexEntry, indexEntry?.categoryIndex);
+        if(indexEntry) {
+            searchText.value = "";
+            categoryIndex.value = indexEntry.categoryIndex;
+            entryIndex.value  = indexEntry.entryIndex;
+        }
+    });
     //const itemRefs = ref([])
     //const type = computed(() => {
       //  return selectedSearchItem.value.includes(",")
@@ -20,15 +35,14 @@
     //});
 </script>
 <template>
-    {{ searchStore.getOrMapIndexes }}
-    <Accordion v-if="isLorebookLoaded">
+    <Accordion v-if="isLorebookLoaded" v-model:activeIndex="categoryIndex">
         <AccordionTab   :header="group.Category?.Name"
                         v-for="group in filteredCategories">
             <input type="hidden" :id="group.CategoryId" />
-            <Panel  v-for="entry in group.Entries" 
+            <Panel  v-for="entry, key in group.Entries" 
                     :data-id="entry.Id"
                     :header="entry.DisplayName" 
-                    :collapsed="true" toggleable
+                    :collapsed="isCollapsed(key)" toggleable
                     class="mb-2">
                     <EntryDetails :entry="entry" />
             </Panel>

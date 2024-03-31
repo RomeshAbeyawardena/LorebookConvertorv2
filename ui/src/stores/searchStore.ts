@@ -17,11 +17,16 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
 
     function mapIndexes()
     {
+        if(isMapped.value) {
+            return mappedIndexes.value;
+        }
+        
+        if (!entryStore.isLorebookLoaded)
+        {
+            return [];
+        }
+
         const mapped = entryStore.lorebook.Groupings.flatMap((g, categoryIndex) => {
-            if(isMapped) {
-                return mappedIndexes.value;
-            }
-            
             return g.Entries.map((e, entryIndex)=> {
                 return {
                     categoryIndex: categoryIndex,
@@ -29,8 +34,8 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
                     id: e.Id
                 }
             });
-        })
-
+        });
+        console.log(mapped);
         mappedIndexes.value.push(... mapped);
         isMapped.value = true;
         return mappedIndexes.value;

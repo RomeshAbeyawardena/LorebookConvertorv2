@@ -16,11 +16,14 @@ export interface IEntryStore {
     searchIndex:Ref<Array<ISearchIndex>>;
     searchText:Ref<string>;
     selectedSearchItem:Ref<string>;
+    categoryIndex:Ref<number>;
+    entryIndex:Ref<number>;
 }
 
 export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
     const isLorebookLoaded = ref(false);
-    
+    const categoryIndex = ref(0);
+    const entryIndex = ref(0);
     const axios:Axios = new Axios({
         baseURL: "/"
     });
@@ -69,13 +72,13 @@ export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
                 } as ISearchIndex
             }));
 
-            searchIndex.value.push(... lorebook.value.Entries.map(c => {
+            searchIndex.value.push(... lorebook.value.Entries.map(e => {
                 return {
-                    id: c.CategoryId.concat(",",c.Id),
-                    keys: [c.DisplayName,... c.Keys],
-                    title: c.DisplayName,
-                    summary: c.Text.substring(0, 50),
-                    entry: c
+                    id: e.Id.concat(",",e.CategoryId),
+                    keys: [e.DisplayName,... e.Keys],
+                    title: e.DisplayName,
+                    summary: e.Text.substring(0, 50),
+                    entry: e
                 } as ISearchIndex
             }));
             
@@ -107,6 +110,8 @@ export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
     const selectedSearchItem = ref("");
 
     return {
+        categoryIndex,
+        entryIndex,
         filteredCategories,
         generateSearchIndex,
         getOrAddSearchIndex,
