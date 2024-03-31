@@ -26,13 +26,23 @@
             searchText.value = "";
             categoryIndex.value = indexEntry.categoryIndex;
             entryIndex.value  = indexEntry.entryIndex;
+            const el = document.getElementById(indexEntry.id);
+            
+            if(el)
+            {  
+                window.setTimeout(() => {
+                    const parent = el.parentElement;
+                    const boundingRectangle = parent?.getBoundingClientRect();
+                    
+                    window.scrollTo({
+                        behavior:"smooth",
+                        top:boundingRectangle?.y
+                    }),1000
+                });
+            }
         }
     });
-    //const itemRefs = ref([])
-    //const type = computed(() => {
-      //  return selectedSearchItem.value.includes(",")
-        //    ? selectedSearchItem.value.split(",") : selectedSearchItem.value;
-    //});
+
 </script>
 <template>
     <Accordion v-if="isLorebookLoaded" v-model:activeIndex="categoryIndex">

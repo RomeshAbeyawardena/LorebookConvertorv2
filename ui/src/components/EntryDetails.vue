@@ -43,6 +43,7 @@
 <template>
     <Card>
         <template #content>
+            <input type="hidden" :id="entry.Id" />
             <div v-html="entryText">
 
             </div>
