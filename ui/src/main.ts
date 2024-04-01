@@ -9,7 +9,9 @@ import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
 
 
-createApp(App)
+const app = createApp(App);
+
+app
     .use(createPinia())
     .use(PrimeVue)
     .use(ToastService)

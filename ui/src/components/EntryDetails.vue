@@ -65,9 +65,10 @@
     <Card :class="setCardClass()">
         <template v-if="props.isStandAlone" #header>
             <div class="flex flex-auto">
-                <Button @click="CloseDetailsPanel" 
+                <Button @click="CloseDetailsPanel"
                         class="flex p-2 border-round" 
-                        severity="primary">
+                        severity="primary"
+                        v-tooltip.top="'Go back'">
                     <i class="pi pi-arrow-circle-left"></i>
                 </Button>
                 <h1 class="flex flex-grow-1 m-0 ml-2 justify-content-end">
