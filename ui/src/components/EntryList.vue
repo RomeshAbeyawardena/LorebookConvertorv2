@@ -41,15 +41,18 @@
             
             if(el)
             {  
-                window.setTimeout(() => {
-                    const parent = el.parentElement;
-                    const boundingRectangle = parent?.getBoundingClientRect();
-                    
-                    window.scrollTo({
-                        behavior:"smooth",
-                        top:boundingRectangle?.y
-                    }),1000
-                });
+                if(!selectedEntry.value)
+                {
+                    window.setTimeout(() => {
+                        const parent = el.parentElement;
+                        const boundingRectangle = parent?.getBoundingClientRect();
+                        
+                        window.scrollTo({
+                            behavior:"smooth",
+                            top:boundingRectangle?.y
+                        }),1000
+                    });
+                }
             }
         }
     });

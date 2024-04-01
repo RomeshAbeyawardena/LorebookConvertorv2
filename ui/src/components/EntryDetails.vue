@@ -4,11 +4,21 @@
     import { computed } from "vue";
     import { IEntry } from '../models/entry';
     import { useNotificationStore } from '../stores/notificationStore'
-    
+    import { useEntryStore } from "../stores/entryStore";
+    import { storeToRefs } from "pinia";
+
+    const entryStore = useEntryStore();
+    const { selectedEntry } = storeToRefs(entryStore);
+
     const props = defineProps({
         entry: { type: Object, required: true },
         isStandAlone: { type: Boolean }
     });
+
+    function CloseDetailsPanel() 
+    {
+        selectedEntry.value = undefined;
+    }
 
     const entry = computed(() => props.entry as IEntry);
     const entryText = computed(() => { 
@@ -43,10 +53,11 @@
     const keys = computed(() => entry.value.Keys.join(", "));
 </script>
 <template>
-    <Card>
+    <Card class="mt-3 p-2 border-rounded border-solid surface-border">
         <template v-if="props.isStandAlone" #header>
             <div class="flex flex-auto">
-                <Button class="flex p-2 border-round" 
+                <Button @click="CloseDetailsPanel" 
+                        class="flex p-2 border-round" 
                         severity="primary">
                     <i class="pi pi-arrow-circle-left"></i>
                 </Button>
