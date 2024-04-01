@@ -5,7 +5,6 @@
     import { IEntry } from '../models/entry';
     import { useNotificationStore } from '../stores/notificationStore'
     
-
     const props = defineProps({
         entry: { type: Object, required: true },
         isStandAlone: { type: Boolean }

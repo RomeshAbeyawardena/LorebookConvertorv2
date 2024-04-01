@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref, Ref } from "vue";
 import { Axios } from "axios";
 import { ILorebook } from "../models/lorebook";
+import { IEntry } from "../models/entry";
 
 export interface IEntryStore {    
     isLorebookLoaded:Ref<boolean>;
@@ -9,6 +10,7 @@ export interface IEntryStore {
     lorebook:Ref<ILorebook>
     categoryIndex:Ref<number>;
     entryIndex:Ref<number>;
+    selectedEntry:Ref<IEntry|undefined>;
 }
 
 export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
@@ -24,8 +26,6 @@ export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
         Categories: [],
         Groupings: []
     });
-
-
 
     async function getLorebook() : Promise<ILorebook> {
         if(lorebook.value && isLorebookLoaded.value) {
@@ -49,11 +49,14 @@ export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
         };
     }
 
+    const selectedEntry = ref<IEntry|undefined>();
+
     return {
         categoryIndex,
         entryIndex,
         isLorebookLoaded,
         getLorebook,
         lorebook,
+        selectedEntry
     };
 });

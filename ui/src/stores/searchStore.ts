@@ -70,7 +70,8 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
 
         if(searchText.value.length > 3) {
             return entryStore.lorebook.Groupings.filter(f => f.Category.Name
-                .toLocaleLowerCase().includes(searchText.value.toLocaleLowerCase()));
+                .toLocaleLowerCase().includes(
+                    searchText.value.toLocaleLowerCase()));
         }
         else {
             return entryStore.lorebook.Groupings;
@@ -90,14 +91,15 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
             return [];
         }
 
-        const mapped = entryStore.lorebook.Groupings.flatMap((g, categoryIndex) => {
-            return g.Entries.map((e, entryIndex)=> {
-                return {
-                    categoryIndex: categoryIndex,
-                    entryIndex:entryIndex,
-                    id: e.Id
-                }
-            });
+        const mapped = entryStore.lorebook.Groupings
+            .flatMap((g, categoryIndex) => {
+                return g.Entries.map((e, entryIndex)=> {
+                    return {
+                        categoryIndex: categoryIndex,
+                        entryIndex:entryIndex,
+                        id: e.Id
+                    }
+                });
         });
 
         mappedIndexes.value.push(... mapped);

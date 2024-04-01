@@ -9,7 +9,7 @@
     import { useSearchStore } from "../stores/searchStore";
     const searchStore = useSearchStore();
     const entryStore = useEntryStore();
-    const { isLorebookLoaded, entryIndex, categoryIndex
+    const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry
     } = storeToRefs(entryStore);
 
     const {
@@ -23,12 +23,20 @@
     watch(selectedSearchItem, (value) => {
         const ids = value.includes(",") 
             ? value.split(",") : [value];
-        const indexEntry = searchStore.getOrMapIndexes.find(f => f.id == ids[0]);
+        
+        const first = ids[0];
+        const indexEntry = searchStore.getOrMapIndexes.find(f => f.id == first);
         console.log(ids, indexEntry, indexEntry?.categoryIndex);
         if(indexEntry) {
             searchText.value = "";
             categoryIndex.value = indexEntry.categoryIndex;
             entryIndex.value  = indexEntry.entryIndex;
+            
+            if(first) {
+                selectedEntry.value = entryStore.lorebook.Entries
+                    .find(f => f.Id == first);
+            }
+
             const el = document.getElementById(indexEntry.id);
             
             if(el)
