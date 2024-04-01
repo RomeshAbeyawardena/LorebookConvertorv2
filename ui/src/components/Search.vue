@@ -1,12 +1,12 @@
 <script setup lang="ts">
     import Dropdown, { DropdownFilterEvent } from 'primevue/dropdown';
-    import { useEntryStore } from "../stores/entryStore";
+    import { useSearchStore } from "../stores/searchStore";
     import { storeToRefs } from "pinia";
     import  { onBeforeMount, ref } from "vue";
-    const entryStore = useEntryStore();
+    const searchStore = useSearchStore();
     
     const { selectedSearchItem, searchText, 
-        isSearchIndexLoaded, getOrAddSearchIndex } = storeToRefs(entryStore);
+        isSearchIndexLoaded, getOrAddSearchIndex } = storeToRefs(searchStore);
 
     function retryHandler() {
         if(!isSearchIndexLoaded.value) {

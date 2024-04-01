@@ -9,7 +9,7 @@ export interface IEntry {
     Category:ICategory;
 } 
 
-export class Entry implements IEntry {
+export class EntryConstructor implements IEntry {
     Id:string = "";
     DisplayName:string = "";
     Text:string = "";

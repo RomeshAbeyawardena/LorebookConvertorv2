@@ -9,9 +9,12 @@
     import { useSearchStore } from "../stores/searchStore";
     const searchStore = useSearchStore();
     const entryStore = useEntryStore();
-    const { isLorebookLoaded, filteredCategories, entryIndex,
-        selectedSearchItem, searchText, categoryIndex
+    const { isLorebookLoaded, entryIndex, categoryIndex
     } = storeToRefs(entryStore);
+
+    const {
+        filteredCategories, selectedSearchItem, searchText
+    } = storeToRefs(searchStore);
 
     function isCollapsed(id:number) {
         return entryIndex.value != id;

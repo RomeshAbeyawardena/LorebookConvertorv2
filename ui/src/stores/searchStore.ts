@@ -2,11 +2,21 @@ import { defineStore } from "pinia";
 import { useEntryStore } from "./entryStore";
 import { IMappedIndex } from "../models/mapped-index";
 import { computed, ComputedRef, ref, Ref } from "vue";
+import { ILorebookGroup } from "../models/groups";
+import { ISearchIndex } from "../models/searchIndex";
+
 export interface ISearchStore {
+    filteredCategories:ComputedRef<Array<ILorebookGroup>>;
+    getOrAddSearchIndex:ComputedRef<Array<ISearchIndex>>;
     getOrMapIndexes:ComputedRef<Array<IMappedIndex>>;
+    generateSearchIndex:() => void;
     isMapped:Ref<boolean>;
+    isSearchIndexLoaded:Ref<boolean>;
     mappedIndexes:Ref<Array<IMappedIndex>>;
     mapIndexes():Array<IMappedIndex>;
+    searchIndex:Ref<Array<ISearchIndex>>;
+    searchText:Ref<string>;
+    selectedSearchItem:Ref<string>;
 }
 
 
@@ -14,6 +24,60 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
     const entryStore = useEntryStore();
     const isMapped = ref(false);
     const mappedIndexes = ref<Array<IMappedIndex>>([]);
+    const isSearchIndexLoaded = ref(false);
+    const searchIndex = ref<Array<ISearchIndex>>([]);
+
+    function generateSearchIndex() {
+        const lorebook = entryStore.lorebook;
+        const isLorebookLoaded = entryStore.isLorebookLoaded;
+
+        if(isLorebookLoaded && !isSearchIndexLoaded.value) {
+            searchIndex.value.push(... lorebook.Categories.map((c) => {
+                return {
+                    id: c.Id,
+                    keys: [c.Name],
+                    title: c.Name,
+                    summary: c.Name,
+                    category: c
+                } as ISearchIndex
+            }));
+
+            searchIndex.value.push(... lorebook.Entries.map(e => {
+                return {
+                    id: e.Id.concat(",",e.CategoryId),
+                    keys: [e.DisplayName,... e.Keys],
+                    title: e.DisplayName,
+                    summary: e.Text.substring(0, 50),
+                    entry: e
+                } as ISearchIndex
+            }));
+            
+            isSearchIndexLoaded.value = true;
+        }
+        return searchIndex.value;
+    }
+
+    const getOrAddSearchIndex = computed(() => {
+        return generateSearchIndex();
+    })
+
+    const searchText = ref("");
+    const filteredCategories = computed(() => {
+        if(!entryStore.isLorebookLoaded)
+        {
+            return [];
+        }
+
+        if(searchText.value.length > 3) {
+            return entryStore.lorebook.Groupings.filter(f => f.Category.Name
+                .toLocaleLowerCase().includes(searchText.value.toLocaleLowerCase()));
+        }
+        else {
+            return entryStore.lorebook.Groupings;
+        }
+    })
+
+    const selectedSearchItem = ref("");
 
     function mapIndexes()
     {
@@ -35,7 +99,7 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
                 }
             });
         });
-        console.log(mapped);
+
         mappedIndexes.value.push(... mapped);
         isMapped.value = true;
         return mappedIndexes.value;
@@ -45,7 +109,14 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
 
     return {
         isMapped,
+        filteredCategories,
+        getOrAddSearchIndex,
+        generateSearchIndex,
         getOrMapIndexes,
+        searchIndex,
+        searchText,
+        selectedSearchItem,
+        isSearchIndexLoaded,
         mapIndexes,
         mappedIndexes
     };

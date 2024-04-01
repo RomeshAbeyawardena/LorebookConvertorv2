@@ -4,8 +4,11 @@
     import { computed } from "vue";
     import { IEntry } from '../models/entry';
     import { useNotificationStore } from '../stores/notificationStore'
+    
+
     const props = defineProps({
-        entry: { type: Object, required: true }
+        entry: { type: Object, required: true },
+        isStandAlone: { type: Boolean }
     });
 
     const entry = computed(() => props.entry as IEntry);
@@ -42,6 +45,17 @@
 </script>
 <template>
     <Card>
+        <template v-if="props.isStandAlone" #header>
+            <div class="flex flex-auto">
+                <Button class="flex p-2 border-round" 
+                        severity="primary">
+                    <i class="pi pi-arrow-circle-left"></i>
+                </Button>
+                <h1 class="flex flex-grow-1 m-0 ml-2 justify-content-end">
+                    {{ entry.DisplayName }}
+                </h1>
+            </div>
+        </template>
         <template #content>
             <input type="hidden" :id="entry.Id" />
             <div v-html="entryText">
