@@ -35,7 +35,7 @@
         
         const first = ids[0];
         const indexEntry = searchStore.getOrMapIndexes.find(f => f.id == first);
-        console.log(ids, indexEntry, indexEntry?.categoryIndex);
+        
         if(indexEntry) {
             searchText.value = "";
             categoryIndex.value = indexEntry.categoryIndex;
@@ -77,7 +77,10 @@
                     :collapsed="isCollapsed(key)" toggleable
                     class="mb-2">
                     <template #header>
-                        <a class="block flex-grow-1 no-underline text-color" @click="toggle(key)" href="javascript:void(0)">{{ entry.DisplayName }}</a>
+                        <a  class="block flex-grow-1 no-underline text-color" 
+                            @click="toggle(key)" href="javascript:void(0)">
+                            {{ entry.DisplayName }}
+                        </a>
                     </template>
                     <EntryDetails :entry="entry" />
             </Panel>
