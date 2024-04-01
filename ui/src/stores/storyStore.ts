@@ -30,6 +30,7 @@ export const useStoryStore = defineStore("story-store", ():IStoryStore => {
         if (response.data) {
             isStoriesLoaded.value = true;
             stories.value = JSON.parse(response.data) as IStory;
+            
             return stories.value;
         }
 
