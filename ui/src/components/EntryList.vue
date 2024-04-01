@@ -20,6 +20,15 @@
         return entryIndex.value != id;
     }
 
+    function toggle(index:number) {
+        if(entryIndex.value == index){
+            entryIndex.value = undefined;
+            return;
+        }
+
+        entryIndex.value = index;
+    }
+
     watch(selectedSearchItem, (value) => {
         const ids = value.includes(",") 
             ? value.split(",") : [value];
@@ -64,10 +73,12 @@
                         v-for="group in filteredCategories">
             <input type="hidden" :id="group.CategoryId" />
             <Panel  v-for="entry, key in group.Entries" 
-                    :data-id="entry.Id"
-                    :header="entry.DisplayName" 
+                    :data-id="entry.Id" 
                     :collapsed="isCollapsed(key)" toggleable
                     class="mb-2">
+                    <template #header>
+                        <a class="block flex-grow-1 no-underline text-color" @click="toggle(key)" href="javascript:void(0)">{{ entry.DisplayName }}</a>
+                    </template>
                     <EntryDetails :entry="entry" />
             </Panel>
         </AccordionTab>

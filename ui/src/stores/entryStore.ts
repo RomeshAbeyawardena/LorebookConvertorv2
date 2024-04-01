@@ -8,15 +8,15 @@ export interface IEntryStore {
     isLorebookLoaded:Ref<boolean>;
     getLorebook: () => Promise<ILorebook>;
     lorebook:Ref<ILorebook>
-    categoryIndex:Ref<number>;
-    entryIndex:Ref<number>;
+    categoryIndex:Ref<number|undefined>;
+    entryIndex:Ref<number|undefined>;
     selectedEntry:Ref<IEntry|undefined>;
 }
 
 export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
     const isLorebookLoaded = ref(false);
-    const categoryIndex = ref(0);
-    const entryIndex = ref(0);
+    const categoryIndex = ref<number|undefined>(undefined);
+    const entryIndex = ref<number|undefined>(undefined);
     const axios:Axios = new Axios({
         baseURL: "/"
     });

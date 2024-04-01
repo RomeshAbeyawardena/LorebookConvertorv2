@@ -40,6 +40,15 @@
         });
     }
 
+    function setCardClass() {
+        const defaultValue = "p-2 border-rounded border-solid surface-border";
+        if(props.isStandAlone){
+            return "mt-3 ".concat(defaultValue);
+        }
+
+        return defaultValue;
+    }
+
     async function copyTitle() {
         await navigator.clipboard.writeText(entry.value.DisplayName);
         notificationStore.set({
@@ -53,7 +62,7 @@
     const keys = computed(() => entry.value.Keys.join(", "));
 </script>
 <template>
-    <Card class="mt-3 p-2 border-rounded border-solid surface-border">
+    <Card :class="setCardClass()">
         <template v-if="props.isStandAlone" #header>
             <div class="flex flex-auto">
                 <Button @click="CloseDetailsPanel" 
