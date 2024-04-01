@@ -3,6 +3,7 @@ import { ref, Ref } from "vue";
 import { Axios } from "axios";
 import { ILorebook } from "../models/lorebook";
 import { IEntry } from "../models/entry";
+import { useStoryStore } from "./storyStore";
 
 export interface IEntryStore {    
     isLorebookLoaded:Ref<boolean>;
@@ -13,7 +14,9 @@ export interface IEntryStore {
     selectedEntry:Ref<IEntry|undefined>;
 }
 
-export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
+export const useEntryStore = defineStore("entry-store", ():IEntryStore => {
+    const storyStore = useStoryStore();
+    
     const isLorebookLoaded = ref(false);
     const categoryIndex = ref<number|undefined>(undefined);
     const entryIndex = ref<number|undefined>(undefined);
@@ -32,7 +35,16 @@ export const useEntryStore = defineStore("entryStore", ():IEntryStore => {
             return lorebook.value;
         }
         
-        const respose = await axios.get("journal.json");
+        if(
+            storyStore.isStoriesLoaded && !storyStore.selectedStory){
+            return {
+                Entries: [],
+                Categories: [],
+                Groupings: []
+            }
+        }
+
+        const respose = await axios.get(storyStore.selectedStory?.filePath!);
         if(respose.data)
         {
             isLorebookLoaded.value = true;
