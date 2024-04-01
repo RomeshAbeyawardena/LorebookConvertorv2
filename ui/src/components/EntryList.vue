@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import Accordion from 'primevue/accordion';
     import AccordionTab from 'primevue/accordiontab';
+    import Badge from 'primevue/badge';
     import Panel from 'primevue/panel';
     import EntryDetails from "./EntryDetails.vue";
     import { useEntryStore } from "../stores/entryStore";
@@ -71,6 +72,9 @@
     <Accordion v-if="isLorebookLoaded" v-model:activeIndex="categoryIndex">
         <AccordionTab   :header="group.Category?.Name"
                         v-for="group in filteredCategories">
+            <template #header>
+                <Badge severity="secondary" :value="group.Entries.length"></Badge>
+            </template>
             <input type="hidden" :id="group.CategoryId" />
             <Panel  v-for="entry, key in group.Entries" 
                     :data-id="entry.Id" 
