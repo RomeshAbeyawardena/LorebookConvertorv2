@@ -32,6 +32,7 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
         const isLorebookLoaded = entryStore.isLorebookLoaded;
 
         if(isLorebookLoaded && !isSearchIndexLoaded.value) {
+            searchIndex.value =[];
             searchIndex.value.push(... lorebook.Categories.map((c) => {
                 return {
                     id: c.Id,

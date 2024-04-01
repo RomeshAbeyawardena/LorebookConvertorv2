@@ -1,11 +1,11 @@
 {
     "data": [{
         "title":"Battle of Ostagar",
-        "filePath":"journal.json",
+        "filePath":"BattleOfOstagar.json",
         "created":"2024-04-01T16:32:24.00Z"
     },{
         "title":"New hope",
-        "filePath":"journal.json",
+        "filePath":"NewHope.json",
         "created":"2024-02-22T18:58:23.00Z"
     }]
 }
