@@ -6,6 +6,7 @@
     import { useNotificationStore } from '../stores/notificationStore'
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
+    import { StringService } from "../services/StringService";
 
     const entryStore = useEntryStore();
     const { selectedEntry } = storeToRefs(entryStore);
@@ -50,7 +51,12 @@
     }
 
     async function copyTitle() {
-        await navigator.clipboard.writeText(entry.value.DisplayName);
+        const s = StringService
+            .ArrayToSentence(entry.value.DisplayName, entry.value.Keys);
+        await navigator.clipboard.writeText(s.length > 0
+            ? entry.value.DisplayName.concat(" also known as ", s)
+            : entry.value.DisplayName);
+
         notificationStore.set({
             title:"Display name copied",
             lifetime: 1000,
