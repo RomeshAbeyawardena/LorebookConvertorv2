@@ -32,3 +32,8 @@ import EntryTreeView from "./components/EntryTreeView.vue";
   </div>
 </div>
 </template>
+<style type="text/css">
+@media screen and (max-width: 650px) {
+  display:none !important;
+}
+</style>
