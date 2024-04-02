@@ -17,13 +17,14 @@
         isStandAlone: { type: Boolean }
     });
 
-    function CloseDetailsPanel() 
+    function closeDetailsPanel() 
     {
         selectedEntry.value = undefined;
     }
 
     function selectEntry() {
         selectedEntry.value = entry.value;
+        window.scrollTo(0, 0);
     }
 
     const entry = computed(() => props.entry as IEntry);
@@ -110,7 +111,7 @@
     <Card :class="setCardClass()">
         <template v-if="props.isStandAlone" #header>
             <div class="flex flex-auto">
-                <Button @click="CloseDetailsPanel"
+                <Button @click="closeDetailsPanel"
                         class="flex p-2 border-round" 
                         severity="primary"
                         v-tooltip.top="'Go back'">
