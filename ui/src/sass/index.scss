@@ -1,0 +1,13 @@
+div.sm\:hidden {
+    @media screen and (max-width: 650px) {
+        display:none !important;
+    }
+}
+div.p-chips {
+    margin-top: 0.5rem;
+}
+
+ul.p-chips-multiple-container {
+    width:100%;
+}
+
