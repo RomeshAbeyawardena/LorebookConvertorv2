@@ -34,6 +34,9 @@
         items.forEach(s => str = s ? str.concat(startTag, s, ".</p>") : str);
         return str;
     }
+    const summaryTextRaw = computed(() => {
+        return entry.value.Text.split(".").slice(0, 4).join(". ").concat(".");
+    });
 
     const summaryText = computed(() => {
         return createParagraphs(entry.value.Text.split(".").slice(0, 4));
@@ -42,6 +45,17 @@
     const entryText = computed(() => { 
         return createParagraphs(entry.value.Text.split("."))
     });
+
+    async function copySummary() {
+        await navigator.clipboard.writeText(summaryTextRaw.value);
+        notificationStore.set({
+            title:"Entry copied",
+            lifetime: 1000,
+            message:"Entry summary copied to clipboard",
+            severity:"info",
+            visible: true
+        });
+    }
 
     const notificationStore = useNotificationStore();
     async function copyEntry() {
@@ -123,6 +137,10 @@
         <template #footer>
             <div class="flex flex-wrap align-items-center justify-content-between gap-3">
             <div class="flex align-items-center gap-2">
+                <Button icon="pi pi-receipt" @click="copySummary"
+                        v-if="!props.isStandAlone"
+                        v-tooltip.top="'Copy summary'"
+                        severity="secondary"></Button>
                 <Button icon="pi pi-copy" @click="copyEntry"
                         v-tooltip.top="'Copy text'" 
                         severity="secondary" 
