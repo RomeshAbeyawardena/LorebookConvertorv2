@@ -26,13 +26,20 @@
     });
 </script>
 <template>
-    <div class="flex-auto mt-2 w-full">
-        <div class="flex-grow-1">
+    <div class="grid mt-2 w-full">
+        <div class="col w-full">
             <Dropdown   v-model="selectedStory"
                         @change="changeHandler"
+                        class="w-full"
                         :options="stories?.data" 
                         option-label="title" 
                         placeholder="Select a story" />
+        </div>
+        <div class="col align-self-center justify-content-center ">
+            <h3 class="m-0 flex justify-content-end ">
+                <span class="sm:hidden md:flex align-self-center ">Lorebook Viewer</span>
+                <i class="flex border-round border-white border-solid pi pi-book ml-2 p-2"></i>
+            </h3>
         </div>
     </div>
 </template>
