@@ -21,6 +21,10 @@
         selectedEntry.value = undefined;
     }
 
+    function selectEntry() {
+        selectedEntry.value = entry.value;
+    }
+
     const entry = computed(() => props.entry as IEntry);
     const entryText = computed(() => { 
         const startTag = '<p class="entry-content-paragrah">';
@@ -91,13 +95,18 @@
         <template #footer>
             <div class="flex flex-wrap align-items-center justify-content-between gap-3">
             <div class="flex align-items-center gap-2">
-                <Button icon="pi pi-copy" @Click="copyEntry"
+                <Button icon="pi pi-copy" @click="copyEntry"
                         v-tooltip.top="'Copy text'" 
                         severity="secondary" 
                         rounded text></Button>
-                <Button icon="pi pi-clipboard" @Click="copyTitle"
+                <Button icon="pi pi-clipboard" @click="copyTitle"
                         v-tooltip.top="'Copy display name'"
                         severity="secondary" 
+                        rounded text></Button>
+                <Button icon="pi pi-expand" @click="selectEntry"
+                        v-if="!props.isStandAlone"
+                        v-tooltip.top="'View details'"
+                        severity="secondary"
                         rounded text></Button>
             </div>
             <span class="p-text-secondary">{{ keys }}</span>
