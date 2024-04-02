@@ -23,7 +23,7 @@ import EntryTreeView from "./components/EntryTreeView.vue";
     <div class="sm:hidden md:block md-col-4">
       <EntryTreeView />
     </div>
-    <div class="sm:col-12 md:col-8">
+    <div class="col">
       <Search v-if="isLorebookLoaded"  />
       <EntryDetails :is-stand-alone="true" 
                     :entry="selectedEntry"

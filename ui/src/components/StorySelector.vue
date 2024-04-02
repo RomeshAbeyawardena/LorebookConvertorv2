@@ -14,7 +14,6 @@
     const { getOrAddStories, selectedStory } = storeToRefs(storyStore);
     
     async function changeHandler(e:DropdownChangeEvent) {
-        console.log(e.value);
         entryStore.isLorebookLoaded = false;
         searchStore.isSearchIndexLoaded = false;
         searchStore.isMapped = false;

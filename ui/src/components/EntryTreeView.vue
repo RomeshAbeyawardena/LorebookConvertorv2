@@ -7,7 +7,6 @@
     const entryStore = useEntryStore();
     const { selectedEntry, isLorebookLoaded, lorebook } = storeToRefs(entryStore);
     function nodeSelectHandler(node: TreeNode) {
-        console.log(node);
         selectedEntry.value = node.data;
     }
     const loreBookNodes = computed(()=> {
@@ -46,5 +45,5 @@
     });
 </script>
 <template>
-    <Tree :value="loreBookNodes" selection-mode="single" @node-select="nodeSelectHandler" />
+    <Tree class="w-full" :value="loreBookNodes" selection-mode="single" @node-select="nodeSelectHandler" />
 </template>
