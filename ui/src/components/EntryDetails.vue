@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import Button from "primevue/button";
     import Card from 'primevue/card';
+    import Chips from 'primevue/chips';
     import { computed } from "vue";
     import { IEntry } from '../models/entry';
     import { useNotificationStore } from '../stores/notificationStore'
@@ -32,7 +33,8 @@
             .split(".")
             .join(".</p>".concat(startTag)));
             return str.substring(0, str.length - startTag.length); 
-        });
+    });
+
     const notificationStore = useNotificationStore();
     async function copyEntry() {
         await navigator.clipboard.writeText(entry.value.Text);
@@ -69,6 +71,17 @@
             visible: true
         });
     }
+
+    const singularCategoryName = computed(() => {
+        const categoryName = entry.value.Category.Name;
+
+        if(categoryName.endsWith('s')) {
+            return categoryName.substring(0, categoryName.length - 1);
+        }
+
+        return categoryName;
+    });
+
     const keys = computed(() => entry.value.Keys.join(", "));
 </script>
 <template>
@@ -87,10 +100,13 @@
             </div>
         </template>
         <template #content>
-            <input type="hidden" :id="entry.Id" />
-            <div v-html="entryText">
-
-            </div>
+                <input type="hidden" :id="entry.Id" />
+                <h3>Summary</h3>
+                <div v-html="entryText"></div>
+                <div v-if="props.isStandAlone">
+                    <h3>{{ singularCategoryName }} keys</h3>
+                    <Chips :modelValue="entry.Keys" class="w-full" :disabled="true" />
+                </div>    
         </template>
         <template #footer>
             <div class="flex flex-wrap align-items-center justify-content-between gap-3">
@@ -115,6 +131,9 @@
     </Card>
 </template>
 <style lang="scss">
+    h3 {
+        margin: 0;
+    }
     p.entry-content-paragrah {
         margin-top: 0;
     }
