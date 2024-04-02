@@ -5,6 +5,8 @@ import PrimeVue from 'primevue/config';
 import "primevue/resources/themes/aura-dark-green/theme.css";
 import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
+
+import "./sass/index.scss";
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
 

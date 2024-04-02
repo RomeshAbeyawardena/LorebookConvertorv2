@@ -1,0 +1,5 @@
+div.sm\:hidden {
+    @media screen and (max-width: 650px) {
+        display:none !important;
+    }
+}
