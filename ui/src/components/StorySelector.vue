@@ -14,6 +14,7 @@
     const { getOrAddStories, selectedStory } = storeToRefs(storyStore);
     
     async function changeHandler() {
+        //reset stores
         entryStore.isLorebookLoaded = false;
         searchStore.isSearchIndexLoaded = false;
         searchStore.isMapped = false;

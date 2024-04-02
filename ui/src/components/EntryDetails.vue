@@ -27,12 +27,20 @@
     }
 
     const entry = computed(() => props.entry as IEntry);
-    const entryText = computed(() => { 
+    
+    function createParagraphs(items:Array<string>) {
         const startTag = '<p class="entry-content-paragrah">';
-        const str =startTag.concat(entry.value.Text
-            .split(".")
-            .join(".</p>".concat(startTag)));
-            return str.substring(0, str.length - startTag.length); 
+        let str = "";
+        items.forEach(s => str = s ? str.concat(startTag, s, ".</p>") : str);
+        return str;
+    }
+
+    const summaryText = computed(() => {
+        return createParagraphs(entry.value.Text.split(".").slice(0, 4));
+    });
+    
+    const entryText = computed(() => { 
+        return createParagraphs(entry.value.Text.split("."))
     });
 
     const notificationStore = useNotificationStore();
@@ -101,12 +109,16 @@
         </template>
         <template #content>
                 <input type="hidden" :id="entry.Id" />
-                <h3>Summary</h3>
-                <div v-html="entryText"></div>
+                <h3 v-if="isStandAlone">Summary</h3>
+                <div v-html="props.isStandAlone ? entryText : summaryText"></div>
                 <div v-if="props.isStandAlone">
                     <h3>{{ singularCategoryName }} keys</h3>
                     <Chips :modelValue="entry.Keys" class="w-full" :disabled="true" />
-                </div>    
+                </div>
+                <div v-if="!props.isStandAlone">
+                    <p class="border-round border-dotted border-primary p-2 m-0 mt-4 font-semibold text-center">
+                        To read more click the <i class="pi pi-expand mr-2 ml-2"></i> 'View details' button</p>
+                </div>
         </template>
         <template #footer>
             <div class="flex flex-wrap align-items-center justify-content-between gap-3">
