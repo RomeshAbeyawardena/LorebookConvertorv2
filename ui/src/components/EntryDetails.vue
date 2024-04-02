@@ -72,12 +72,12 @@
         <template v-if="props.isStandAlone" #header>
             <div class="flex flex-auto">
                 <Button @click="CloseDetailsPanel"
-                        class="flex p-2 border-round" 
+                        class="flex p-2 border-round max-h-2rem" 
                         severity="primary"
                         v-tooltip.top="'Go back'">
                     <i class="pi pi-arrow-circle-left"></i>
                 </Button>
-                <h1 class="flex flex-grow-1 m-0 ml-2 justify-content-end">
+                <h1 class="flex align-self align-items-center flex-grow-1 m-0 ml-2 justify-content-end text-overflow-ellipsis">
                     {{ entry.DisplayName }}
                 </h1>
             </div>
