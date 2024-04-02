@@ -8,6 +8,7 @@
     import Toast from 'primevue/toast';
     import { storeToRefs } from "pinia";
     import { useStoryStore } from "./stores/storyStore";
+import EntryTreeView from "./components/EntryTreeView.vue";
     const storyStore = useStoryStore();
     const entryStore = useEntryStore();
     const { selectedEntry, isLorebookLoaded } = storeToRefs(entryStore);
@@ -17,11 +18,17 @@
 </script>
 <template>
   <Toast />
-  
-  <Search v-if="isLorebookLoaded"  />
-  <StorySelector />
-  <EntryDetails :is-stand-alone="true" 
-                :entry="selectedEntry"
-                v-if="selectedEntry != undefined" />
-  <EntryList v-if="isLorebookLoaded" />
+  <div class="grid">
+    <StorySelector />
+    <div class="sm:hidden md:block md-col-4">
+      <EntryTreeView />
+    </div>
+    <div class="sm:col-12 md:col-8">
+      <Search v-if="isLorebookLoaded"  />
+      <EntryDetails :is-stand-alone="true" 
+                    :entry="selectedEntry"
+                    v-if="selectedEntry != undefined" />
+      <EntryList v-if="isLorebookLoaded" />
+  </div>
+</div>
 </template>
