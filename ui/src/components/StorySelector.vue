@@ -2,7 +2,7 @@
     import { useEntryStore } from "../stores/entryStore";
     import { useStoryStore } from "../stores/storyStore";
     import { storeToRefs } from "pinia"; 
-    import Dropdown, { DropdownChangeEvent } from "primevue/dropdown";
+    import Dropdown from "primevue/dropdown";
     import { onMounted, ref } from "vue";
     import { IStory } from "../models/story";
     import { useSearchStore } from "../stores/searchStore";
@@ -13,7 +13,7 @@
     const stories = ref<IStory>()
     const { getOrAddStories, selectedStory } = storeToRefs(storyStore);
     
-    async function changeHandler(e:DropdownChangeEvent) {
+    async function changeHandler() {
         entryStore.isLorebookLoaded = false;
         searchStore.isSearchIndexLoaded = false;
         searchStore.isMapped = false;
