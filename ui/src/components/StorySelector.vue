@@ -37,8 +37,12 @@
         </div>
         <div class="col align-self-center justify-content-center ">
             <h3 class="m-0 flex justify-content-end ">
-                <span class="sm:hidden md:flex align-self-center ">Lorebook Viewer</span>
-                <i class="flex border-round border-white border-solid pi pi-book ml-2 p-2"></i>
+                <span class="sm:hidden md:flex align-self-center">
+                    Lorebook Viewer
+                </span>
+                <i  style="color: var(--primary-color)"
+                    v-tooltip:top="'Lorebook Viewer'"
+                    class="flex border-round border-primary border-solid pi pi-book ml-2 p-2"></i>
             </h3>
         </div>
     </div>
