@@ -1,7 +1,7 @@
 <script setup lang="ts">
     //import { Comment } from "./models/comment";
     import Card from "primevue/card";
-    import { computed, onBeforeMount } from "vue";
+    import { computed, onBeforeMount, onUnmounted } from "vue";
     import { useCommentStore } from "../stores/commentStore";
     import { storeToRefs } from "pinia";
     
@@ -16,6 +16,12 @@
         await commentStore.getComments();
     })
     
+    onUnmounted(async() => {
+        if(commentStore.hasPendingComments)
+        {
+            await commentStore.saveComments();
+        }
+    })
 
     const props = defineProps({
         entryId:String,

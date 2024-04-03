@@ -9,7 +9,7 @@
     import { storeToRefs } from "pinia";
     import { useStoryStore } from "./stores/storyStore";
     import EntryTreeView from "./components/EntryTreeView.vue";
-
+    import Comments from "./components/Comments.vue";
     const storyStore = useStoryStore();
     const entryStore = useEntryStore();
     
@@ -31,6 +31,7 @@
                     :entry="selectedEntry"
                     v-if="selectedEntry != undefined" />
       <EntryList v-if="isLorebookLoaded" />
+      <Comments></Comments>
   </div>
 </div>
 </template>

@@ -7,10 +7,12 @@ export interface ICommentStore {
     comments:Ref<Array<IComment>>;
     getComments(): Promise<Array<IComment>>;
     saveComments():Promise<void>;
+    hasPendingComments:Ref<boolean>;
 }
 
 export const useCommentStore = defineStore("comment-store", ():ICommentStore => 
 {
+    const hasPendingComments = ref(false);
     const comments = ref<Array<IComment>>([]);
     const backend:IBackend = new Backend();
     const parameters:IDBObjectStoreParameters = {
@@ -34,7 +36,8 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         const store = backend.store("comment", "readwrite");
         if(store)
         {
-            return await backend.get(store);
+            comments.value = await backend.get(store);
+            return comments.value;
         }
 
         await backend.close();
@@ -66,6 +69,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
     return {
         comments,
         getComments,
+        hasPendingComments,
         saveComments
     };
 });

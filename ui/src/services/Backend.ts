@@ -46,10 +46,12 @@ export class Backend implements IBackend {
         return new Promise<Event>((resolve, reject) => {
             if(this.db)
             {
-                this.db.addEventListener("close", resolve);
+                this.db.addEventListener("close", e => { console.log(e); resolve(e); });
                 this.db.addEventListener("error", reject);
                 this.db.close();
                 this.db = undefined;
+                console.log("closed");
+                resolve(new Event("closed"));
             }
             else 
             {
