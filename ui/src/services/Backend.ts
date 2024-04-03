@@ -85,7 +85,7 @@ export class Backend implements IBackend {
                     f[2](store);
                 }
             });
-
+            
         upgrade(ev);
     }
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { ref, onUnmounted } from "vue";
+    import { useStoryStore } from "../stores/storyStore";
     import { useCommentStore } from "../stores/commentStore";
     import { storeToRefs } from "pinia";
     
@@ -29,11 +30,13 @@
         parentMessageId:String
     });
 
+    const storyStore = useStoryStore();
+    const { selectedStory } = storeToRefs(storyStore);
     function saveCommentHandler() {
-        if(props.entryId)
+        if(props.entryId && selectedStory.value)
         {
             commentStore.comments.push(Comment
-                .new(props.entryId, message.value, 
+                .new(selectedStory.value.id, props.entryId, message.value, 
                     title.value, props.parentMessageId));
             hasPendingComments.value = true;
             title.value = "";

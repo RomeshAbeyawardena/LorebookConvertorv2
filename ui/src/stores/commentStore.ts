@@ -23,6 +23,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
     backend.configure([
         ["comment", parameters , p => {
             p.createIndex("ID", "messageId", { unique: true, });
+            p.createIndex("storyId", "storyId");
             p.createIndex("entryId", "entryId");
             p.createIndex("parentMessageId", "parentMessageId");
             p.createIndex("message", "message");
@@ -51,6 +52,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         {
             var mapped: IComment[] = comments.value.map(c => {
                 return {
+                    storyId:c.storyId,
                     messageId:c.messageId,
                     entryId:c.entryId,
                     parentMessageId:c.parentMessageId,
@@ -58,7 +60,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
                     created:c.created,
                 };
             });
-            console.log(mapped);
+
             await backend.put(store, mapped, "messageId");
             store.transaction.commit();
         }
