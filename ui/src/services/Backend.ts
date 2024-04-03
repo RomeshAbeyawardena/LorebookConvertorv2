@@ -1,9 +1,11 @@
 export interface IBackend {
     db?:IDBDatabase;
     configure(entries:Array<[s:string, parameters:IDBObjectStoreParameters, configure:(store:IDBObjectStore) => void ]>):void;
+    get<T>(store:IDBObjectStore) : Promise<Array<T>>;
     open(name:string, version:number):Promise<Event>;
-    store(name:string, storeName:string, mode?:IDBTransactionMode):IDBObjectStore|undefined;
+    store(storeName:string, mode?:IDBTransactionMode):IDBObjectStore|undefined;
     put<T>(store:IDBObjectStore, items:Array<T>, key:(item:T) => any) : Promise<Event>;
+    close():Promise<Event>;
 }
 
 export class Backend implements IBackend {
@@ -11,6 +13,21 @@ export class Backend implements IBackend {
     private entries:Array<[s:string, parameters:IDBObjectStoreParameters, configure:(store:IDBObjectStore) => void ]> = [];
 
     db?:IDBDatabase;
+
+    get<T>(store:IDBObjectStore) : Promise<Array<T>> {
+        return new Promise<Array<T>>((resolve, reject) => {
+            const request = store.getAll();
+            request.addEventListener("success", () => {
+                resolve(request.result);
+            });
+
+            request.addEventListener("error", () => {
+                reject(request.error);
+            });
+        });
+        
+    }
+
     open(name: string, version: number): Promise<Event> {
         return new Promise<Event>((resolve, reject) => {
             if(this.openRequest && this.db) {
@@ -24,6 +41,27 @@ export class Backend implements IBackend {
             this.openRequest.addEventListener("upgradeneeded", e => this.onUpgrade(e, resolve));
         });
     };
+
+    close() : Promise<Event> {
+        return new Promise<Event>((resolve, reject) => {
+            if(this.db)
+            {
+                this.db.addEventListener("close", resolve);
+                this.db.addEventListener("error", reject);
+                this.db.close();
+                this.db = undefined;
+            }
+            else 
+            {
+                resolve(new Event("nodatabasetoclose"));
+            }
+
+            if(this.openRequest)
+            {
+                this.openRequest = undefined;
+            }
+        });
+    }
 
     configure(entries: Array<[s: string, parameters: IDBObjectStoreParameters, configure:(store:IDBObjectStore) => void ]>): void {
         this.entries = entries;
@@ -49,8 +87,8 @@ export class Backend implements IBackend {
         upgrade(ev);
     }
 
-    store(name:string, storeName:string, mode?:IDBTransactionMode):IDBObjectStore|undefined {
-        return this.db?.transaction(name, mode).objectStore(storeName);
+    store(storeName:string, mode?:IDBTransactionMode):IDBObjectStore|undefined {
+        return this.db?.transaction(storeName, mode).objectStore(storeName);
     }
 
     put<T>(store:IDBObjectStore, items:Array<T>, key:(item:T) => any) : Promise<Event> {

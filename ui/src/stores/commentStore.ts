@@ -31,16 +31,25 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
 
     async function getComments() : Promise<Array<IComment>> {
         await backend.open("comments", 1);
-        
+        const store = backend.store("comment", "readwrite");
+        if(store)
+        {
+            return await backend.get(store);
+        }
+
+        await backend.close();
         return [];
     };
 
     async function saveComments() {
-        const store = backend.store("comments", "comment", "readwrite");
+        await backend.open("comments", 1);
+        const store = backend.store("comment", "readwrite");
         if(store)
         {
             await backend.put(store, comments.value, c => c.entryId);
         }
+
+        await backend.close();
     }
 
     return {
