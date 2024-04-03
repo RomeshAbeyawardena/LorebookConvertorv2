@@ -10,8 +10,8 @@ export interface IComment {
 }
 
 export class Comment {
-    public static new(entryId:string, parentMessageId:string, 
-            message:string, title?:string): IComment {
+    public static new(entryId:string, message:string, 
+        title?:string, parentMessageId?:string): IComment {
         return {
             messageId: v4(),
             entryId: entryId,

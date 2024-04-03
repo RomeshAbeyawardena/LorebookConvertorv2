@@ -8,6 +8,7 @@
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
     import { StringService } from "../services/StringService";
+    import Comments from "./Comments.vue";
 
     const entryStore = useEntryStore();
     const { selectedEntry } = storeToRefs(entryStore);
@@ -133,6 +134,10 @@
                 <div v-if="!props.isStandAlone">
                     <p class="border-round border-dotted border-primary p-2 m-0 mt-4 font-semibold text-center">
                         To read more click the <i class="pi pi-expand mr-2 ml-2"></i> 'View details' button</p>
+                </div>
+                <div v-if="props.isStandAlone">
+                    <h3 class="mt-4">Comments</h3>
+                    <Comments :entryId="entry.Id" />
                 </div>
         </template>
         <template #footer>

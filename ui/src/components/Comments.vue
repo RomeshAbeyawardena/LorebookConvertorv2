@@ -1,10 +1,11 @@
 <script setup lang="ts">
     //import { Comment } from "./models/comment";
     import Card from "primevue/card";
-    import { computed, onBeforeMount, onUnmounted } from "vue";
+    import { computed, onBeforeMount } from "vue";
     import { useCommentStore } from "../stores/commentStore";
     import { storeToRefs } from "pinia";
-    
+    import AddComment from "./AddComment.vue";
+
     const commentStore = useCommentStore();
     const { comments } = storeToRefs(commentStore);
     const childComments = computed(() => {
@@ -24,13 +25,6 @@
     onBeforeMount(async() => {
         await commentStore.getComments();
     })
-    
-    onUnmounted(async() => {
-        if(commentStore.hasPendingComments)
-        {
-            await commentStore.saveComments();
-        }
-    })
 
     const props = defineProps({
         entryId:String,
@@ -39,11 +33,12 @@
 </script>
 <template>
     <div>
-        <div>
-            <h3>Comments</h3>
+        <div    class="border-round border-solid surface-border mt-2 mb-4 p-2"
+                v-if="entryComments.length < 1">
+            <p class="m-0 p-0">No comments</p>
         </div>
         <div v-for="comment in entryComments">
-            <Card>
+            <Card class="mt-2 mb-2">
                 <template #title>
                     {{ comment.title }}
                 </template>
@@ -66,6 +61,9 @@
                     </div>
                 </template>
             </Card>
+        </div>
+        <div>
+            <AddComment v-if="props.entryId" :entry-id="props.entryId" />
         </div>
     </div>
 </template>
