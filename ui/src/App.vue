@@ -10,15 +10,12 @@
     import { useStoryStore } from "./stores/storyStore";
     import EntryTreeView from "./components/EntryTreeView.vue";
 
-    import { useCommentStore } from "./stores/commentStore";
-
     const storyStore = useStoryStore();
     const entryStore = useEntryStore();
-    const commentStore = useCommentStore();
+    
     const { selectedEntry, isLorebookLoaded } = storeToRefs(entryStore);
     onBeforeMount(async() => {
       await storyStore.getStories();
-      console.log(await commentStore.getComments());
     });
 </script>
 <template>

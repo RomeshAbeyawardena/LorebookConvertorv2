@@ -14,17 +14,17 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
     const comments = ref<Array<IComment>>([]);
     const backend:IBackend = new Backend();
     const parameters:IDBObjectStoreParameters = {
-        keyPath: "messageId",
-        autoIncrement:false
+        //keyPath: "messageId",
+        //autoIncrement:false,
     };
     
     backend.configure([
         ["comment", parameters , p => {
-            p.createIndex("ID", "messageId", { unique: true });
+            p.createIndex("ID", "messageId", { unique: true, });
             p.createIndex("entryId", "entryId");
             p.createIndex("parentMessageId", "parentMessageId");
             p.createIndex("message", "message");
-            p.createIndex("created", "created", { multiEntry: true });
+            p.createIndex("created", "created");
         }]
     ]);
 
@@ -46,7 +46,18 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         const store = backend.store("comment", "readwrite");
         if(store)
         {
-            await backend.put(store, comments.value, c => c.entryId);
+            var mapped: IComment[] = comments.value.map(c => {
+                return {
+                    messageId:c.messageId,
+                    entryId:c.entryId,
+                    parentMessageId:c.parentMessageId,
+                    message:c.message,
+                    created:c.created,
+                };
+            });
+            console.log(mapped);
+            await backend.put(store, mapped, "messageId");
+            store.transaction.commit();
         }
 
         await backend.close();

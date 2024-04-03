@@ -4,7 +4,7 @@ export interface IBackend {
     get<T>(store:IDBObjectStore) : Promise<Array<T>>;
     open(name:string, version:number):Promise<Event>;
     store(storeName:string, mode?:IDBTransactionMode):IDBObjectStore|undefined;
-    put<T>(store:IDBObjectStore, items:Array<T>, key:(item:T) => any) : Promise<Event>;
+    put<T>(store:IDBObjectStore, items:Array<T>, key:string) : Promise<Event>;
     close():Promise<Event>;
 }
 
@@ -91,12 +91,12 @@ export class Backend implements IBackend {
         return this.db?.transaction(storeName, mode).objectStore(storeName);
     }
 
-    put<T>(store:IDBObjectStore, items:Array<T>, key:(item:T) => any) : Promise<Event> {
+    put<T>(store:IDBObjectStore, items:Array<T>, key:string) : Promise<Event> {
         return new Promise((resolve, reject) => {
             items.forEach(c => {
-                const valid = store.put(c, key(c));
+                const valid = store.put(c, key);
                 valid?.addEventListener("success", resolve);
-                valid?.addEventListener("error", reject)
+                valid?.addEventListener("error", reject);
             });
         });
     }
