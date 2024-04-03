@@ -7,8 +7,17 @@
     
     const commentStore = useCommentStore();
     const { comments } = storeToRefs(commentStore);
-
+    const childComments = computed(() => {
+        return (parentMessageId:string) => {
+            return comments.value.filter(c => c.parentMessageId == parentMessageId);
+        }
+    });
     const entryComments = computed(() => {
+        if(!props.entryId)
+        {
+            return comments.value.filter(c => c.parentMessageId == undefined);
+        }
+
         return comments.value.filter(c => c.parentMessageId == undefined && c.entryId == props.entryId);
     });
 
@@ -39,9 +48,19 @@
                     {{ comment.title }}
                 </template>
                 <template #content>
-                    <div class="m-0" v-html="comment.message"></div>
+                    <div class="m-0">
+                        <p v-html="comment.message"></p>
+                    </div>
                 </template>
                 <template #footer>
+                    <div class="">
+                        <div v-for="childComment in childComments(comment.messageId)">
+                            <p v-html="childComment.message"></p>
+                            <div>
+                                <span>{{ childComment.created }}</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex gap-3 mt-1">
                         <span>{{ comment.created }}</span>
                     </div>
