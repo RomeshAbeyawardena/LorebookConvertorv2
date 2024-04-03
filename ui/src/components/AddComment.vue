@@ -18,6 +18,8 @@
         if(hasPendingComments.value)
         {
             await commentStore.saveComments();
+            hasPendingComments.value = false;
+            console.log("Saved");
         }
     })
 
@@ -33,6 +35,9 @@
             commentStore.comments.push(Comment
                 .new(props.entryId, message.value, 
                     title.value, props.parentMessageId));
+            hasPendingComments.value = true;
+            title.value = "";
+            message.value = "";
         }
     }
 </script>

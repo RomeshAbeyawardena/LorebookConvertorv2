@@ -5,7 +5,10 @@
     import { useCommentStore } from "../stores/commentStore";
     import { storeToRefs } from "pinia";
     import AddComment from "./AddComment.vue";
+    import { DateService } from "../services/DateService";
 
+    const dateService = new DateService();
+    
     const commentStore = useCommentStore();
     const { comments } = storeToRefs(commentStore);
     const childComments = computed(() => {
@@ -38,7 +41,11 @@
             <p class="m-0 p-0">No comments</p>
         </div>
         <div v-for="comment in entryComments">
-            <Card class="mt-2 mb-2">
+            <Card   class="mt-2 mb-4 border-round border-solid border-primary"
+                    style="border-top-style: none !important">
+                <template #header>
+                    <div class="chat-header border-round border-noround-bottom"></div>
+                </template>
                 <template #title>
                     {{ comment.title }}
                 </template>
@@ -52,12 +59,12 @@
                         <div v-for="childComment in childComments(comment.messageId)">
                             <p v-html="childComment.message"></p>
                             <div>
-                                <span>{{ childComment.created }}</span>
+                                <span>{{ dateService.format(childComment.created) }}</span>
                             </div>
                         </div>
                     </div>
                     <div class="flex gap-3 mt-1">
-                        <span>{{ comment.created }}</span>
+                        <span>{{ dateService.format(comment.created) }}</span>
                     </div>
                 </template>
             </Card>
