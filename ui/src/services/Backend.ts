@@ -2,7 +2,8 @@ export interface IBackend {
     db?:IDBDatabase;
     configure(entries:Array<[s:string, parameters:IDBObjectStoreParameters, configure:(store:IDBObjectStore) => void ]>):void;
     open(name:string, version:number):Promise<Event>;
-    store(name:string, storeName:string):IDBObjectStore|undefined
+    store(name:string, storeName:string, mode?:IDBTransactionMode):IDBObjectStore|undefined;
+    put<T>(store:IDBObjectStore, items:Array<T>, key:(item:T) => any) : Promise<Event>;
 }
 
 export class Backend implements IBackend {
@@ -12,6 +13,10 @@ export class Backend implements IBackend {
     db?:IDBDatabase;
     open(name: string, version: number): Promise<Event> {
         return new Promise<Event>((resolve, reject) => {
+            if(this.openRequest && this.db) {
+                return resolve(new Event("open", { "composed":true }));
+            }
+
             this.openRequest = indexedDB.open(name, version);
             this.openRequest.addEventListener("success", e => this.onSuccess(e, resolve));
             this.openRequest.addEventListener("error", reject);
@@ -46,6 +51,16 @@ export class Backend implements IBackend {
 
     store(name:string, storeName:string, mode?:IDBTransactionMode):IDBObjectStore|undefined {
         return this.db?.transaction(name, mode).objectStore(storeName);
+    }
+
+    put<T>(store:IDBObjectStore, items:Array<T>, key:(item:T) => any) : Promise<Event> {
+        return new Promise((resolve, reject) => {
+            items.forEach(c => {
+                const valid = store.put(c, key(c));
+                valid?.addEventListener("success", resolve);
+                valid?.addEventListener("error", reject)
+            });
+        });
     }
 }
 
