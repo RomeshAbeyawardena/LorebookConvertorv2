@@ -96,9 +96,10 @@ export class Backend implements IBackend {
     put<T>(store:IDBObjectStore, items:Array<T>, key:string) : Promise<Event> {
         return new Promise((resolve, reject) => {
             items.forEach(c => {
-                const valid = store.put(c, key);
-                valid?.addEventListener("success", resolve);
-                valid?.addEventListener("error", reject);
+                console.log(c);
+                    const valid = store.put(c, key);
+                    valid?.addEventListener("success", resolve);
+                    valid?.addEventListener("error", reject);
             });
         });
     }

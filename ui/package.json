@@ -10,11 +10,13 @@
     "dev-srss": "node server"
   },
   "dependencies": {
+    "@types/localforage": "^0.0.34",
     "@types/lodash": "^4.17.0",
     "@types/luxon": "^3.4.2",
     "@types/uuid": "^9.0.8",
     "axios": "^1.6.8",
     "express": "^4.19.2",
+    "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",
     "pinia": "^2.1.7",
