@@ -11,6 +11,7 @@ export interface ICommentStore {
     getComment(messageId:string):Promise<IComment|undefined|null>;
     getComments(storyId:string): Promise<Array<IComment>>;
     saveComments():Promise<void>;
+    selectedComment:Ref<IComment|undefined>;
     hasPendingComments:Ref<boolean>;
 }
 
@@ -18,6 +19,8 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
 {
     const isCommentsLoaded = ref(false);
     const hasPendingComments = ref(false);
+    const selectedComment = ref<IComment|undefined>();
+
     const comments = ref<Array<IComment>>([]);
     const backend:LocalForage = localForage.createInstance({
         name:"comments",
@@ -48,7 +51,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
                 comments.value.push(item);
             }
         }
-        
+
         isCommentsLoaded.value = comments.value.length > 0;
 
         return comments.value;
@@ -68,6 +71,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         getComment,
         getComments,
         hasPendingComments,
-        saveComments
+        saveComments,
+        selectedComment
     };
 });

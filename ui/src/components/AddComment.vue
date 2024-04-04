@@ -9,12 +9,20 @@
     import Button from "primevue/button";
     import { Comment } from "../models/comment";
     import { useNotificationStore } from "../stores/notificationStore";
-
+    import { computed, watch } from "vue";
     const title = ref("");
     const message = ref("");
     const commentStore = useCommentStore();
     const notificationStore = useNotificationStore();
-    const { hasPendingComments } = storeToRefs(commentStore);
+    const { hasPendingComments, selectedComment } = storeToRefs(commentStore);
+
+    watch(selectedComment, (newValue) => {
+        if(newValue)
+        {
+            title.value = newValue.title ?? title.value;
+            message.value = newValue.message;
+        }
+    })
 
     async function saveComments() {
         if(hasPendingComments.value)
@@ -46,12 +54,28 @@
 
     const storyStore = useStoryStore();
     const { selectedStory } = storeToRefs(storyStore);
+
+    const verb = computed(() => {
+        return selectedComment.value 
+            ? "Edit"
+            : "Add";
+    }) 
+
     function saveCommentHandler() {
         if(props.entryId && selectedStory.value)
         {
-            commentStore.comments.push(Comment
-                .new(selectedStory.value.id, props.entryId, message.value, 
-                    title.value, props.parentMessageId));
+            if(selectedComment.value) {
+                selectedComment.value.title = title.value;
+                selectedComment.value.message = message.value;
+                selectedComment.value = undefined;
+                return;
+            }
+            else {
+                commentStore.comments.push(Comment
+                    .new(selectedStory.value.id, props.entryId, message.value, 
+                        title.value, props.parentMessageId));
+            }
+
             hasPendingComments.value = true;
             title.value = "";
             message.value = "";
@@ -60,7 +84,7 @@
 </script>
 <template>
     <form>
-        <h4 class="mt-2">Add new Comment</h4>
+        <h4 class="mt-2">{{ verb }} new Comment</h4>
         <div class="field mt-4">
             <label>Title</label>
             <InputText v-model="title" class="w-full" />
