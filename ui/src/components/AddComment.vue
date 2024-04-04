@@ -8,20 +8,34 @@
     import Editor from 'primevue/editor';
     import Button from "primevue/button";
     import { Comment } from "../models/comment";
+    import { useNotificationStore } from "../stores/notificationStore";
 
     const title = ref("");
     const message = ref("");
     const commentStore = useCommentStore();
-
+    const notificationStore = useNotificationStore();
     const { hasPendingComments } = storeToRefs(commentStore);
 
-    onUnmounted(async() => {
+    async function saveComments() {
         if(hasPendingComments.value)
         {
             await commentStore.saveComments();
             hasPendingComments.value = false;
-            console.log("Saved");
+            notificationStore.set({
+                title: "Comments saved",
+                message: "Comments have been saved",
+                severity:"success",
+                visible: true,
+                lifetime: 1000
+            });
         }
+    }
+    
+    const intervalId = setInterval(saveComments, 30000);
+
+    onUnmounted(async() => {
+        await saveComments();
+        clearInterval(intervalId);
     })
 
     const props = defineProps({
