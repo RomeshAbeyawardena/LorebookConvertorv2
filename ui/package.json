@@ -10,10 +10,12 @@
     "dev-srss": "node server"
   },
   "dependencies": {
+    "@types/lodash": "^4.17.0",
     "@types/luxon": "^3.4.2",
     "@types/uuid": "^9.0.8",
     "axios": "^1.6.8",
     "express": "^4.19.2",
+    "lodash": "^4.17.21",
     "luxon": "^3.4.4",
     "pinia": "^2.1.7",
     "primeflex": "^3.3.1",

@@ -50,12 +50,14 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         const store = backend.store("comment", "readwrite");
         if(store)
         {
+            //convert to a plain javascript object, indexeddb can't handle complex mutatation objects vue provides!
             var mapped: IComment[] = comments.value.map(c => {
                 return {
                     storyId:c.storyId,
                     messageId:c.messageId,
                     entryId:c.entryId,
                     parentMessageId:c.parentMessageId,
+                    title:c.title,
                     message:c.message,
                     created:c.created,
                 };
