@@ -9,7 +9,7 @@ export interface ICommentStore {
     comments:Ref<Array<IComment>>;
     isCommentsLoaded:Ref<boolean>;
     getComment(messageId:string):Promise<IComment|undefined|null>;
-    getComments(): Promise<Array<IComment>>;
+    getComments(storyId:string): Promise<Array<IComment>>;
     saveComments():Promise<void>;
     hasPendingComments:Ref<boolean>;
 }
@@ -25,7 +25,8 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         storeName:"comments"
     });
 
-    async function getComment(messageId:string, useCache?:boolean) {
+    async function getComment(messageId:string, 
+        useCache?:boolean) {
         if(useCache) {
             return comments.value.find(c => c.messageId == messageId);
         }
@@ -33,7 +34,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         return await backend.getItem<IComment>(messageId);
     }
 
-    async function getComments() : Promise<Array<IComment>> {
+    async function getComments(storyId:string) : Promise<Array<IComment>> {
         if(isCommentsLoaded.value) {
             return comments.value;
         }
@@ -42,12 +43,12 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
          
         for(let key of keys) {
             const item = await getComment(key);
-            if(item)
+            if(item && item.storyId == storyId)
             {
                 comments.value.push(item);
             }
         }
-
+        
         isCommentsLoaded.value = comments.value.length > 0;
 
         return comments.value;

@@ -2,6 +2,7 @@
     //import { Comment } from "./models/comment";
     import Card from "primevue/card";
     import { computed, onBeforeMount } from "vue";
+    import { useStoryStore } from "../stores/storyStore";
     import { useCommentStore } from "../stores/commentStore";
     import { storeToRefs } from "pinia";
     import AddComment from "./AddComment.vue";
@@ -25,9 +26,14 @@
         return comments.value.filter(c => c.parentMessageId == undefined && c.entryId == props.entryId);
     });
 
+    const storyStore = useStoryStore();
+
     onBeforeMount(async() => {
-        await commentStore.getComments();
-    })
+        if(storyStore.selectedStory)
+        {
+            await commentStore.getComments(storyStore.selectedStory.id);
+        }
+    });
 
     const props = defineProps({
         entryId:String,
