@@ -8,6 +8,7 @@ import localForage from "localforage";
 export interface ICommentStore {
     comments:Ref<Array<IComment>>;
     isCommentsLoaded:Ref<boolean>;
+    getComment(messageId:string):Promise<IComment|undefined|null>;
     getComments(): Promise<Array<IComment>>;
     saveComments():Promise<void>;
     hasPendingComments:Ref<boolean>;
@@ -24,6 +25,14 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         storeName:"comments"
     });
 
+    async function getComment(messageId:string, useCache?:boolean) {
+        if(useCache) {
+            return comments.value.find(c => c.messageId == messageId);
+        }
+
+        return await backend.getItem<IComment>(messageId);
+    }
+
     async function getComments() : Promise<Array<IComment>> {
         if(isCommentsLoaded.value) {
             return comments.value;
@@ -32,14 +41,14 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         const keys = await backend.keys();
          
         for(let key of keys) {
-            const item = await backend.getItem<IComment>(key);
+            const item = await getComment(key);
             if(item)
             {
                 comments.value.push(item);
             }
         }
 
-        isCommentsLoaded.value = comments.value.length > 0
+        isCommentsLoaded.value = comments.value.length > 0;
 
         return comments.value;
     };
@@ -53,7 +62,9 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
     }
 
     return {
+        isCommentsLoaded,
         comments,
+        getComment,
         getComments,
         hasPendingComments,
         saveComments
