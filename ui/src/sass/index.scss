@@ -16,3 +16,11 @@ ul.p-chips-multiple-container {
     background: url('/background.webp');
     background-position: 50% 70%;
 }
+
+fieldset.custom-fieldset {
+    legend.p-fieldset-legend,a {
+        width:100%;
+        display: flex;
+        justify-content: space-between;
+    }
+}

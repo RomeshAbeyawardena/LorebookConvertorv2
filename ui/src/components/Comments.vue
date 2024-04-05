@@ -84,7 +84,7 @@
                     </div>
                 </template>
                 <template #footer>
-                    <div class="">
+                    <div>
                         <div v-for="childComment in childComments(comment.messageId)">
                             <p v-html="childComment.message"></p>
                             <div>
