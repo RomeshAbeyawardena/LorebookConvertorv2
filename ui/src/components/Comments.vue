@@ -65,6 +65,9 @@
 </script>
 <template>
     <div>
+        <div>
+            <AddComment v-if="props.entryId" :entry-id="props.entryId" />
+        </div>
         <div    class="border-round border-solid surface-border mt-2 mb-4 p-2"
                 v-if="entryComments.length < 1">
             <p class="m-0 p-0">No comments</p>
@@ -106,9 +109,6 @@
                     </div>
                 </template>
             </Card>
-        </div>
-        <div>
-            <AddComment v-if="props.entryId" :entry-id="props.entryId" />
         </div>
     </div>
 </template>
