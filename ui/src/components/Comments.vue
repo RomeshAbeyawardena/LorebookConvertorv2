@@ -48,6 +48,7 @@
         }
 
         selectedComment.value = comment;
+        document.getElementById("comment-form")?.scrollIntoView();
     }
 
     function setIconClass(messageId:string) {
@@ -65,7 +66,7 @@
 </script>
 <template>
     <div>
-        <div>
+        <div id="comment-form" class="mb-4">
             <AddComment v-if="props.entryId" :entry-id="props.entryId" />
         </div>
         <div    class="border-round border-solid surface-border mt-2 mb-4 p-2"

@@ -23,7 +23,11 @@
             title.value = newValue.title ?? title.value;
             message.value = newValue.message;
         }
-    })
+        else {
+            title.value = "";
+            message.value = "";
+        }
+    });
 
     async function saveComments() {
         if(hasPendingComments.value)
@@ -88,6 +92,10 @@
             message.value = "";
         }
     }
+
+    function cancelEditHandler() {
+        selectedComment.value = undefined;
+    }
 </script>
 <template>
     <form>
@@ -103,8 +111,17 @@
             </Editor>
         </div>
         <div>
-            <Button :icon="saveIcon" :label="verb" @click="saveCommentHandler">
-                
+            <Button :icon="saveIcon" 
+                    :label="verb" 
+                    @click="saveCommentHandler">
+            </Button>
+            <Button icon="pi pi-times"
+                    label="Cancel editing"
+                    class="ml-2"
+                    severity="danger"
+                    v-if="selectedComment"
+                    @click="cancelEditHandler">
+
             </Button>
         </div>
     </form>
