@@ -60,7 +60,13 @@
         return selectedComment.value 
             ? "Edit"
             : "Add new";
-    }) 
+    });
+
+    const saveIcon = computed(() => {
+        return selectedComment.value
+            ? "pi pi-pencil"
+            : "pi pi-plus";
+    });
 
     function saveCommentHandler() {
         if(props.entryId && selectedStory.value)
@@ -74,6 +80,7 @@
                 commentStore.comments.push(Comment
                     .new(selectedStory.value.id, props.entryId, message.value, 
                         title.value, props.parentMessageId));
+                commentStore.orderComments();
             }
             
             hasPendingComments.value = true;
@@ -96,8 +103,8 @@
             </Editor>
         </div>
         <div>
-            <Button @click="saveCommentHandler">
-                {{ verb }}
+            <Button :icon="saveIcon" :label="verb" @click="saveCommentHandler">
+                
             </Button>
         </div>
     </form>

@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { IComment } from "../models/comment";
 import { ref, Ref } from "vue";
 import cloneDeep from "lodash/cloneDeep";
-
+import { orderBy } from "lodash";
 import localForage from "localforage";
 
 export interface ICommentStore {
@@ -10,6 +10,7 @@ export interface ICommentStore {
     isCommentsLoaded:Ref<boolean>;
     getComment(messageId:string):Promise<IComment|undefined|null>;
     getComments(storyId:string): Promise<Array<IComment>>;
+    orderComments(): void;
     saveComments():Promise<void>;
     selectedComment:Ref<IComment|undefined>;
     hasPendingComments:Ref<boolean>;
@@ -20,7 +21,9 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
     const isCommentsLoaded = ref(false);
     const hasPendingComments = ref(false);
     const selectedComment = ref<IComment|undefined>();
-
+    function orderComments() {
+        comments.value = orderBy(comments.value, a => a.created, "desc");
+    }
     const comments = ref<Array<IComment>>([]);
     const backend:LocalForage = localForage.createInstance({
         name:"comments",
@@ -53,7 +56,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         }
 
         isCommentsLoaded.value = comments.value.length > 0;
-
+        orderComments();
         return comments.value;
     };
 
@@ -71,6 +74,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
         getComment,
         getComments,
         hasPendingComments,
+        orderComments,
         saveComments,
         selectedComment
     };

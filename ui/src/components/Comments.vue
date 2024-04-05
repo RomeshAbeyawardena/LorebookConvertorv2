@@ -19,6 +19,7 @@
                 .filter(c => c.parentMessageId == parentMessageId);
         }
     });
+    
     const entryComments = computed(() => {
         if(!props.entryId)
         {
