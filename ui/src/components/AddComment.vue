@@ -10,6 +10,7 @@
     import { Comment } from "../models/comment";
     import { useNotificationStore } from "../stores/notificationStore";
     import { computed, watch } from "vue";
+    
     const title = ref("");
     const message = ref("");
     const commentStore = useCommentStore();
@@ -58,7 +59,7 @@
     const verb = computed(() => {
         return selectedComment.value 
             ? "Edit"
-            : "Add";
+            : "Add new";
     }) 
 
     function saveCommentHandler() {
@@ -68,14 +69,13 @@
                 selectedComment.value.title = title.value;
                 selectedComment.value.message = message.value;
                 selectedComment.value = undefined;
-                return;
             }
             else {
                 commentStore.comments.push(Comment
                     .new(selectedStory.value.id, props.entryId, message.value, 
                         title.value, props.parentMessageId));
             }
-
+            
             hasPendingComments.value = true;
             title.value = "";
             message.value = "";
@@ -84,7 +84,7 @@
 </script>
 <template>
     <form>
-        <h4 class="mt-2">{{ verb }} new Comment</h4>
+        <h4 class="mt-2">{{ verb }} Comment</h4>
         <div class="field mt-4">
             <label>Title</label>
             <InputText v-model="title" class="w-full" />
@@ -97,7 +97,7 @@
         </div>
         <div>
             <Button @click="saveCommentHandler">
-                Save
+                {{ verb }}
             </Button>
         </div>
     </form>
