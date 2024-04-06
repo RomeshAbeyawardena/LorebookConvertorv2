@@ -12,6 +12,8 @@
     import Fieldset from 'primevue/fieldset';
     import Badge from 'primevue/badge';
     import { useCommentStore } from "../stores/commentStore";
+    import KeyListComponent from "./KeyListComponent.vue";
+
     const entryStore = useEntryStore();
     const { selectedEntry } = storeToRefs(entryStore);
 
@@ -113,7 +115,7 @@
         return categoryName;
     });
 
-    const keys = computed(() => entry.value.Keys.join(", "));
+    //const keys = computed(() => entry.value.Keys.join(", "));
 </script>
 <template>
     <Card :class="setCardClass()">
@@ -186,7 +188,9 @@
                         severity="secondary"
                         rounded text></Button>
             </div>
-            <span class="p-text-secondary">{{ keys }}</span>
+            <span class="p-text-secondary">
+                <KeyListComponent :entries="entry.Keys" />
+            </span>
             </div>
         </template>
     </Card>
