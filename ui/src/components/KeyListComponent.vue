@@ -20,10 +20,10 @@
 
 </script>
 <template>
-    <ul v-for="item in props.entries" class="flex list-none">
-        <li class="flex-auto">
-            <a href="javascript:void(0)" @click="copyHandler(item)">
-                <i class="pi pi-copy ml-2"></i>
+    <ul class="flex list-none flex-row flex-wrap">
+        <li v-for="item in props.entries" class="flex flex-auto">
+            <a href="javascript:void(0)" class="ml-2" @click="copyHandler(item)">
+                <i class="pi pi-copy"></i>
             </a>
             <span>{{ item }}</span>
         </li>
