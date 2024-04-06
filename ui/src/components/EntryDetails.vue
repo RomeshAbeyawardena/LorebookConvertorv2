@@ -8,10 +8,20 @@
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
     import { StringService } from "../services/StringService";
+    import Comments from "./Comments.vue";
+    import Fieldset from 'primevue/fieldset';
+    import Badge from 'primevue/badge';
+    import { useCommentStore } from "../stores/commentStore";
+    import KeyListComponent from "./KeyListComponent.vue";
 
     const entryStore = useEntryStore();
     const { selectedEntry } = storeToRefs(entryStore);
 
+    const commentStore = useCommentStore();
+    const { comments } = storeToRefs(commentStore);
+    const entryCommenntsLength = computed(() => {
+        return comments.value.filter(c => c.entryId == selectedEntry.value?.Id).length;
+    })
     const props = defineProps({
         entry: { type: Object, required: true },
         isStandAlone: { type: Boolean }
@@ -105,7 +115,7 @@
         return categoryName;
     });
 
-    const keys = computed(() => entry.value.Keys.join(", "));
+    //const keys = computed(() => entry.value.Keys.join(", "));
 </script>
 <template>
     <Card :class="setCardClass()">
@@ -134,6 +144,28 @@
                     <p class="border-round border-dotted border-primary p-2 m-0 mt-4 font-semibold text-center">
                         To read more click the <i class="pi pi-expand mr-2 ml-2"></i> 'View details' button</p>
                 </div>
+                <Fieldset   legend="Comments" 
+                            class="custom-fieldset"
+                            v-if="props.isStandAlone" 
+                            :collapsed="true"
+                            toggleable>
+                    <template #legend>
+                        <div class="flex justify-content-between align-items-center flex-wrap">
+                            <h3 class="flex mr-2">Comments</h3>
+                            <div class="flex flex-grow-1"></div>
+                            <div class="flex align-items-center">
+                                <Badge  class="flex align-items-center" 
+                                        :value="entryCommenntsLength.toString()" />
+                            </div>
+                        </div>
+                    </template>
+                    <template #togglericon>
+                        <div class="flex mr-2">
+                            <i class="pi pi-comments"></i>
+                        </div>
+                    </template>
+                    <Comments :entryId="entry.Id" />
+                </Fieldset>
         </template>
         <template #footer>
             <div class="flex flex-wrap align-items-center justify-content-between gap-3">
@@ -156,7 +188,9 @@
                         severity="secondary"
                         rounded text></Button>
             </div>
-            <span class="p-text-secondary">{{ keys }}</span>
+            <span class="p-text-secondary">
+                <KeyListComponent :entries="entry.Keys" />
+            </span>
             </div>
         </template>
     </Card>

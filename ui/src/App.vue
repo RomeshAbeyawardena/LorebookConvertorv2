@@ -8,9 +8,11 @@
     import Toast from 'primevue/toast';
     import { storeToRefs } from "pinia";
     import { useStoryStore } from "./stores/storyStore";
-import EntryTreeView from "./components/EntryTreeView.vue";
+    import EntryTreeView from "./components/EntryTreeView.vue";
+    
     const storyStore = useStoryStore();
     const entryStore = useEntryStore();
+    
     const { selectedEntry, isLorebookLoaded } = storeToRefs(entryStore);
     onBeforeMount(async() => {
       await storyStore.getStories();
