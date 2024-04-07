@@ -4,7 +4,7 @@
     import Button from "primevue/button";
     import { ref, computed } from 'vue';
     import MultiSelect from 'primevue/multiselect';
-import { IEntryGroup } from '../models/EntryGroup';
+    import { IEntryGroup } from '../models/EntryGroup';
 
     const props = defineProps({
         entryId: { type: String, required:true }
