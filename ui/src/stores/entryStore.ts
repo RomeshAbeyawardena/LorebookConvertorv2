@@ -8,6 +8,7 @@ import { useStoryStore } from "./storyStore";
 export interface IEntryStore {    
     isLorebookLoaded:Ref<boolean>;
     getLorebook: () => Promise<ILorebook>;
+    getEntries:(entryId:Array<string>) => Array<IEntry>;
     lorebook:Ref<ILorebook>
     categoryIndex:Ref<number|undefined>;
     entryIndex:Ref<number|undefined>;
@@ -63,10 +64,19 @@ export const useEntryStore = defineStore("entry-store", ():IEntryStore => {
 
     const selectedEntry = ref<IEntry|undefined>();
 
+    function getEntries(entryIds:Array<string>) {
+        if(!isLorebookLoaded) {
+            return [];
+        }
+
+        return lorebook.value.Entries.filter(e => entryIds.some(i => i == e.Id));
+    }
+
     return {
         categoryIndex,
         entryIndex,
         isLorebookLoaded,
+        getEntries,
         getLorebook,
         lorebook,
         selectedEntry
