@@ -2,16 +2,27 @@
     import { storeToRefs } from 'pinia';
     import { useEntryGroupingStore } from '../stores/EntryGroupingStore';
     import Button from "primevue/button";
-    import { ref, computed } from 'vue';
+    import { ref, computed, onBeforeMount } from 'vue';
     import MultiSelect from 'primevue/multiselect';
     import { IEntryGroup } from '../models/EntryGroup';
+    import { useStoryStore } from '../stores/storyStore';
 
+    const storyStore = useStoryStore();
+    const { selectedStory } = storeToRefs(storyStore);
     const props = defineProps({
         entryId: { type: String, required:true }
     });
+
     const currentGroups = ref<Array<IEntryGroup>>([]);
     const entryGroupingStore = useEntryGroupingStore();
-    const { groups } = storeToRefs(entryGroupingStore);
+    const { isGroupsLoaded, groups } = storeToRefs(entryGroupingStore);
+    
+    onBeforeMount(async() => {
+        if(!isGroupsLoaded.value && selectedStory.value) {
+            await entryGroupingStore.getGroups(selectedStory.value?.id)
+        }
+    });
+    
     const entryGroups = computed(() => {
         return groups.value.filter(g => g.entryIds.some(e => e == props.entryId));
     });

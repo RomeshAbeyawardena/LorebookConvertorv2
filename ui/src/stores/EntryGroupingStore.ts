@@ -1,12 +1,12 @@
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { Ref, ref } from "vue";
 import { EntryGroup, IEntryGroup } from "../models/EntryGroup";
 import localForage from "localforage";
-
+import { useStoryStore } from "./storyStore";
 export interface IEntryGroupingStore {
     addToGroup:(entryId:string, groupId?:string, groupName?:string) => void;
     findGroup:(groupId?:string, groupName?:string) => IEntryGroup|undefined;
-    getGroups():Promise<Array<IEntryGroup>>;
+    getGroups(storyId:string):Promise<Array<IEntryGroup>>;
     getGroup(groupId:String):Promise<IEntryGroup|null>;
     isGroupsLoaded:Ref<boolean>;
     removeFromGroup:(entryId:string, groupId?:string, groupName?:string) => void;
@@ -21,17 +21,21 @@ export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEnt
         storeName:"entryGroups"
     });
 
-   const isGroupsLoaded = ref(false);
+    const storyStore = useStoryStore();
+
+    const { isStoriesLoaded, selectedStory } = storeToRefs(storyStore);
+
+    const isGroupsLoaded = ref(false);
 
     async function getGroup(groupId:string) {
         return await backend.getItem<IEntryGroup>(groupId);
     } 
 
-    async function getGroups() {
+    async function getGroups(storyId:string) {
         const keys = await backend.keys();
         for(let key of keys) {
             const item = await getGroup(key);
-            if(item)
+            if(item && item.storyId == storyId)
             {
                 groups.value.push(item);
             }
@@ -57,12 +61,16 @@ export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEnt
    function addToGroup(entryId:string, groupId?:string, groupName?:string) {
         let group = findGroup(groupId, groupName);
 
+        if(!isStoriesLoaded.value || !selectedStory.value) {
+            throw new Error("Selected Story not selected");
+        }
+
         if(!groupName) {
             throw new Error("Unable to create a group with a name");
         }
 
-        if(!group) {
-            group = EntryGroup.new(groupName, [entryId]);
+        if( !group) {
+            group = EntryGroup.new(selectedStory.value.id, groupName, [entryId]);
         }
         else {
             group.entryIds.push(entryId);
