@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { storeToRefs } from 'pinia';
     import { useEntryGroupingStore } from '../stores/EntryGroupingStore';
-    import { Button} from "primevue/button";
+    import Button from "primevue/button";
     import { ref, computed } from 'vue';
     import MultiSelect from 'primevue/multiselect';
 import { IEntryGroup } from '../models/EntryGroup';
