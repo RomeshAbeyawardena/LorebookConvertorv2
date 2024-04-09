@@ -6,16 +6,22 @@
     import EntryDetails from "./EntryDetails.vue";
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
-    import { watch } from "vue";
+    import { onBeforeMount, ref, watch } from "vue";
     import { useSearchStore } from "../stores/searchStore";
+import { ILorebookGroup } from '../models/groups';
     const searchStore = useSearchStore();
     const entryStore = useEntryStore();
     const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry
     } = storeToRefs(entryStore);
 
+    const categories = ref<Array<ILorebookGroup>>([]);
     const {
         filteredCategories, selectedSearchItem, searchText
     } = storeToRefs(searchStore);
+
+    onBeforeMount(async() => {
+        categories.value = await filteredCategories.value
+    })
 
     function isCollapsed(id:number) {
         return entryIndex.value != id;
@@ -71,7 +77,7 @@
 <template>
     <Accordion class="mt-2" v-if="isLorebookLoaded" v-model:activeIndex="categoryIndex">
         <AccordionTab   :header="group.Category?.Name"
-                        v-for="group in filteredCategories">
+                        v-for="group in categories">
             <template #header>
                 <Badge severity="secondary" :value="group.Entries.length"></Badge>
             </template>

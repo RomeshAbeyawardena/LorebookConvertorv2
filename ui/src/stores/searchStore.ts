@@ -4,9 +4,12 @@ import { IMappedIndex } from "../models/mapped-index";
 import { computed, ComputedRef, ref, Ref } from "vue";
 import { ILorebookGroup } from "../models/groups";
 import { ISearchIndex } from "../models/searchIndex";
+import { useEntryGroupingStore } from "./EntryGroupingStore";
+import { useStoryStore } from "./storyStore";
+import { IEntry } from "../models/entry";
 
 export interface ISearchStore {
-    filteredCategories:ComputedRef<Array<ILorebookGroup>>;
+    filteredCategories:ComputedRef<Promise<Array<ILorebookGroup>>>;
     getOrAddSearchIndex:ComputedRef<Array<ISearchIndex>>;
     getOrMapIndexes:ComputedRef<Array<IMappedIndex>>;
     generateSearchIndex:() => void;
@@ -61,9 +64,10 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
     const getOrAddSearchIndex = computed(() => {
         return generateSearchIndex();
     })
-
+    const storyStore = useStoryStore();
+    const entryGroupingStore = useEntryGroupingStore();
     const searchText = ref("");
-    const filteredCategories = computed(() => {
+    const filteredCategories = computed(async () => {
         if(!entryStore.isLorebookLoaded)
         {
             return [];
@@ -75,6 +79,29 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
                     searchText.value.toLocaleLowerCase()));
         }
         else {
+            const allGroups:Array<ILorebookGroup> =[]
+            if(storyStore.selectedStory)
+            {
+                const groups = await entryGroupingStore.getGroups(storyStore.selectedStory?.id)
+                
+                if(groups.length > 0) {
+                    allGroups.push(... entryStore.lorebook.Groupings)
+
+                    for(let group of groups) {
+                        allGroups.push({
+                            Category: {
+                                Id: "",
+                                Name:group.name 
+                            },
+                            CategoryId: "",
+                            Entries: group.entryIds.map(e => entryStore.lorebook.Entries.find(le => le.Id == e) as IEntry)
+                        });
+                    }
+                    
+                    return allGroups;
+                }
+            }
+            
             return entryStore.lorebook.Groupings;
         }
     })
