@@ -32,34 +32,36 @@ export const useEntryStore = defineStore("entry-store", ():IEntryStore => {
     });
 
     async function getLorebook() : Promise<ILorebook> {
-        if(lorebook.value && isLorebookLoaded.value) {
-            return lorebook.value;
-        }
-        
-        if(
-            storyStore.isStoriesLoaded && !storyStore.selectedStory){
+        return await navigator.locks.request("getLoreBook", async() => {
+            if(lorebook.value && isLorebookLoaded.value) {
+                return lorebook.value;
+            }
+            
+            if(
+                storyStore.isStoriesLoaded && !storyStore.selectedStory){
+                return {
+                    Entries: [],
+                    Categories: [],
+                    Groupings: []
+                }
+            }
+    
+            const respose = await axios.get(storyStore.selectedStory?.filePath!);
+            if(respose.data)
+            {
+                isLorebookLoaded.value = true;
+                const result = JSON.parse(respose.data) as ILorebook;
+                
+                lorebook.value = result;
+                return result;
+            }
+    
             return {
                 Entries: [],
                 Categories: [],
                 Groupings: []
-            }
-        }
-
-        const respose = await axios.get(storyStore.selectedStory?.filePath!);
-        if(respose.data)
-        {
-            isLorebookLoaded.value = true;
-            const result = JSON.parse(respose.data) as ILorebook;
-            
-            lorebook.value = result;
-            return result;
-        }
-
-        return {
-            Entries: [],
-            Categories: [],
-            Groupings: []
-        };
+            };
+        });
     }
 
     const selectedEntry = ref<IEntry|undefined>();

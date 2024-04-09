@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import Badge from "primevue/badge";
 import Fieldset from 'primevue/fieldset';
+
 defineProps({
     badgeValue: String,
     legend: String,
     toggleIcon: String,
 });
+
 </script>
 <template>
     <Fieldset class="custom-fieldset" :collapsed="true" toggleable>
