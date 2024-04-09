@@ -73,13 +73,18 @@ import { ILorebookGroup } from '../models/groups';
         }
     });
 
+    function setSeverity(isGroup:boolean) {
+        return isGroup ? "info" : "secondary";
+    }
+
 </script>
 <template>
-    <Accordion class="mt-2" v-if="isLorebookLoaded" v-model:activeIndex="categoryIndex">
+    <Accordion  class="mt-2" v-if="isLorebookLoaded" 
+                v-model:activeIndex="categoryIndex">
         <AccordionTab   :header="group.Category?.Name"
                         v-for="group in categories">
             <template #header>
-                <Badge severity="secondary" :value="group.Entries.length"></Badge>
+                <Badge :severity="setSeverity(group.isGroup)" :value="group.Entries.length"></Badge>
             </template>
             <input type="hidden" :id="group.CategoryId" />
             <Panel  v-for="entry, key in group.Entries" 

@@ -91,8 +91,9 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
                         allGroups.push({
                             Category: {
                                 Id: "",
-                                Name:group.name 
+                                Name:group.name,
                             },
+                            isGroup:true,
                             CategoryId: "",
                             Entries: group.entryIds.map(e => entryStore.lorebook.Entries.find(le => le.Id == e) as IEntry)
                         });
