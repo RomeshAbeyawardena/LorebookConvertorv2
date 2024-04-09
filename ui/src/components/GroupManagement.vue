@@ -7,7 +7,7 @@
     import InputGroup from 'primevue/inputgroup';
     import InputGroupAddon from 'primevue/inputgroupaddon';
 
-    import { ref, onBeforeMount } from 'vue';
+    import { ref, onBeforeMount, watch } from 'vue';
     import MultiSelect from 'primevue/multiselect';
     import { EntryGroup, IEntryGroup } from '../models/EntryGroup';
     import { useStoryStore } from '../stores/storyStore';
@@ -22,6 +22,8 @@
     const entryGroupingStore = useEntryGroupingStore();
     const { isGroupsLoaded, groups } = storeToRefs(entryGroupingStore);
     
+        //TODO: Set an interval to check for changes to groups and commit to backend
+
     onBeforeMount(async() => {
         if(!isGroupsLoaded.value && selectedStory.value) {
             await entryGroupingStore.getGroups(selectedStory.value?.id)
@@ -30,6 +32,10 @@
         currentGroups.value = groups.value.filter(g => g.entryIds.some(e => e == props.entryId));
     });
     
+    watch(() => props.entryId, (entryId) => {
+        currentGroups.value = groups.value.filter(g => g.entryIds.some(e => e == entryId));
+    })
+
     const groupName = ref("");
     function addGroup() {
         if(selectedStory.value?.id)
@@ -41,6 +47,21 @@
 
         groupName.value = "";
     }
+
+    function saveGroups() {
+        for(let group of groups.value) 
+        {
+            const index = group.entryIds.indexOf(props.entryId)
+            if(index != -1) {
+                group.entryIds.splice(index, 1);
+            }
+
+            if(currentGroups.value.includes(group)) {
+                group.entryIds.push(props.entryId);
+            }
+        }
+    }
+
 </script>
 <template>
     <div class="mb-2">
@@ -69,6 +90,6 @@
     </div>
     <div>
         <!-- Modify groups-->
-        <Button label="Save groups" icon="pi pi-disk"></Button>
+        <Button label="Save groups" @click="saveGroups" icon="pi pi-disk"></Button>
     </div>
 </template>
