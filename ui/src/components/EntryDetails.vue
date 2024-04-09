@@ -12,6 +12,7 @@
     import CounterGroup from "./CounterGroup.vue";
     import { useCommentStore } from "../stores/commentStore";
     import KeyListComponent from "./KeyListComponent.vue";
+    import GroupManagement from "./GroupManagement.vue";
 
     const entryStore = useEntryStore();
     const { selectedEntry } = storeToRefs(entryStore);
@@ -148,7 +149,10 @@
                                 v-if="props.isStandAlone">
                                 <Comments :entryId="entry.Id" />
                 </CounterGroup>
-                
+                <CounterGroup   legend="Groups" toggle-icon="pi pi-th-large"
+                                badge-value="22">
+                    <GroupManagement :entry-id="entry.Id" />
+                </CounterGroup>
         </template>
         <template #footer>
             <div class="flex flex-wrap align-items-center justify-content-between gap-3">

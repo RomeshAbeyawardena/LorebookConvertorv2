@@ -41,7 +41,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
     }
 
     async function getComments(storyId:string) : Promise<Array<IComment>> {
-        return await navigator.locks.request("comments_".concat(storyId), async() => {
+        return await navigator.locks.request("getComments", async() => {
             if(isCommentsLoaded.value) {
                 return comments.value;
             }
