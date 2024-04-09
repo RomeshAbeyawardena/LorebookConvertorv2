@@ -7,10 +7,11 @@
     import InputGroup from 'primevue/inputgroup';
     import InputGroupAddon from 'primevue/inputgroupaddon';
 
-    import { ref, onBeforeMount, watch } from 'vue';
+    import { ref, onBeforeMount, watch, onBeforeUnmount } from 'vue';
     import MultiSelect from 'primevue/multiselect';
     import { EntryGroup, IEntryGroup } from '../models/EntryGroup';
     import { useStoryStore } from '../stores/storyStore';
+    import { useNotificationStore } from '../stores/notificationStore';
 
     const storyStore = useStoryStore();
     const { selectedStory } = storeToRefs(storyStore);
@@ -20,9 +21,32 @@
 
     const currentGroups = ref<Array<IEntryGroup>>([]);
     const entryGroupingStore = useEntryGroupingStore();
-    const { isGroupsLoaded, groups } = storeToRefs(entryGroupingStore);
+    const { hasPendingChanges, isGroupsLoaded, groups } = storeToRefs(entryGroupingStore);
+    const notificationStore = useNotificationStore();
     
-        //TODO: Set an interval to check for changes to groups and commit to backend
+    async function commitGroups() {
+        if(hasPendingChanges.value)
+        {
+            await entryGroupingStore.saveGroups();
+            hasPendingChanges.value = false;
+            notificationStore.set({
+                title: "Groups saved",
+                message: "Groups have been saved",
+                severity:"success",
+                visible: true,
+                lifetime: 3000
+            });
+        }
+    }
+
+    const intervalId = setInterval(async() => {
+        await commitGroups();
+    }, 30000)
+
+    onBeforeUnmount(async () => {
+        await commitGroups();
+        clearInterval(intervalId);
+    });
 
     onBeforeMount(async() => {
         if(!isGroupsLoaded.value && selectedStory.value) {
@@ -40,9 +64,36 @@
     function addGroup() {
         if(selectedStory.value?.id)
         {
-            const entryGroup = EntryGroup.new(selectedStory.value?.id, groupName.value, [props.entryId]);
-            groups.value.push(entryGroup);
-            currentGroups.value.push(entryGroup);
+            const group = groupName.value.trim()
+            if(group.length < 1)
+            {
+                notificationStore.set({
+                    title: "Group must have a name",
+                    message: "Group must have a name",
+                    severity:"error",
+                    visible: true,
+                    lifetime: 2500
+                });    
+
+                return;
+            }
+
+            let entryGroup = groups.value.find(f => f.name == group);
+            if(entryGroup)
+            {
+                if(!entryGroup.entryIds.includes(props.entryId)) {
+                    entryGroup.entryIds.push(props.entryId);
+                }
+            }
+            else 
+            {
+                entryGroup = EntryGroup.new(selectedStory.value?.id, group, [props.entryId]);
+                groups.value.push(entryGroup);
+            }
+
+            if(!currentGroups.value.includes(entryGroup)) {
+                currentGroups.value.push(entryGroup);
+            }
         }
 
         groupName.value = "";
@@ -60,6 +111,7 @@
                 group.entryIds.push(props.entryId);
             }
         }
+        hasPendingChanges.value = true;
     }
 
 </script>
@@ -81,7 +133,7 @@
                     <InputGroup>
                         <InputText v-model="groupName" class="w-full" placeholder="Group name"></InputText>
                         <InputGroupAddon>
-                            <Button icon="pi pi-plus" @click="addGroup" />
+                            <Button icon="pi pi-plus" :disabled="groupName.length < 1" @click="addGroup" />
                         </InputGroupAddon>
                     </InputGroup>
                 </div>

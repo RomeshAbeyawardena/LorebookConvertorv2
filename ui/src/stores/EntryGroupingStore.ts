@@ -3,18 +3,22 @@ import { Ref, ref } from "vue";
 import { EntryGroup, IEntryGroup } from "../models/EntryGroup";
 import localForage from "localforage";
 import { useStoryStore } from "./storyStore";
+import { cloneDeep } from "lodash";
 export interface IEntryGroupingStore {
     addToGroup:(entryId:string, groupId?:string, groupName?:string) => void;
     findGroup:(groupId?:string, groupName?:string) => IEntryGroup|undefined;
     getGroups(storyId:string):Promise<Array<IEntryGroup>>;
     getGroup(groupId:String):Promise<IEntryGroup|null>;
+    hasPendingChanges:Ref<boolean>;
     isGroupsLoaded:Ref<boolean>;
     removeFromGroup:(entryId:string, groupId?:string, groupName?:string) => void;
     groups:Ref<Array<IEntryGroup>>;
+    saveGroups():Promise<void>;
 }
 
 export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEntryGroupingStore => {
-   const groups = ref<Array<IEntryGroup>>([]);
+   const hasPendingChanges = ref(false);
+    const groups = ref<Array<IEntryGroup>>([]);
    const backend:LocalForage = localForage.createInstance({
         name:"comments",
         version:1.0,
@@ -31,17 +35,31 @@ export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEnt
         return await backend.getItem<IEntryGroup>(groupId);
     } 
 
-    async function getGroups(storyId:string) {
-        const keys = await backend.keys();
-        for(let key of keys) {
-            const item = await getGroup(key);
-            if(item && item.storyId == storyId)
-            {
-                groups.value.push(item);
-            }
+    async function saveGroups() {
+        var mapped : IEntryGroup[] = groups.value.map(c => cloneDeep(c) as IEntryGroup);
+        for(let entryGroup of mapped)
+        {
+            await backend.setItem(entryGroup.groupId, entryGroup);
         }
-        
-        return groups.value;
+    }
+
+    async function getGroups(storyId:string) {
+        return await navigator.locks.request("getGroups", async() => {
+            if(!isGroupsLoaded.value)
+            {
+                const keys = await backend.keys();
+                console.log(keys);
+                for(let key of keys) {
+                    const item = await getGroup(key);
+                    if(item && item.storyId == storyId)
+                    {
+                        groups.value.push(item);
+                    }
+                }
+            }
+            isGroupsLoaded.value = true;
+            return groups.value;
+        });
     }
 
    function findGroup(groupId?:string, groupName?:string) {
@@ -100,6 +118,8 @@ export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEnt
         getGroup,
         getGroups,
         removeFromGroup,
-        groups
+        groups,
+        saveGroups,
+        hasPendingChanges
    }
 });

@@ -47,7 +47,7 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
             }
             
             const keys = await backend.keys();
-            
+            console.log(keys);
             for(let key of keys) {
                 const item = await getComment(key);
                 if(item && item.storyId == storyId)
