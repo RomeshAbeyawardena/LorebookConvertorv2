@@ -4,15 +4,65 @@
     import EntryList from "./components/EntryList.vue";
     import Search from "./components/Search.vue";
     import { useEntryStore } from "./stores/entryStore";
-    import { onBeforeMount } from "vue";
+    import { onBeforeMount, onBeforeUnmount } from "vue";
     import Toast from 'primevue/toast';
     import { storeToRefs } from "pinia";
     import { useStoryStore } from "./stores/storyStore";
+    import { useCommentStore } from "./stores/commentStore";
+    import { useNotificationStore } from "./stores/notificationStore";
+    import { useEntryGroupingStore } from "./stores/EntryGroupingStore";
     import EntryTreeView from "./components/EntryTreeView.vue";
     
     const storyStore = useStoryStore();
     const entryStore = useEntryStore();
+    const commentStore = useCommentStore();
+    const { hasPendingComments } = storeToRefs(commentStore)
+    const notificationStore = useNotificationStore();
+    const entryGroupingStore = useEntryGroupingStore();
+    const { hasPendingChanges } = storeToRefs(entryGroupingStore);
     
+    async function saveGroups() {
+        if(hasPendingChanges.value)
+        {
+            await entryGroupingStore.saveGroups();
+            hasPendingChanges.value = false;
+            notificationStore.set({
+                title: "Groups saved",
+                message: "Groups have been saved",
+                severity:"success",
+                visible: true,
+                lifetime: 3000
+            });
+        }
+    }
+    
+
+    async function saveComments() {
+        if(hasPendingComments.value)
+        {
+            await commentStore.saveComments();
+            hasPendingComments.value = false;
+            notificationStore.set({
+                title: "Comments saved",
+                message: "Comments have been saved",
+                severity:"success",
+                visible: true,
+                lifetime: 1000
+            });
+        }
+    }
+        
+    const intervalId = setInterval(async() => {
+      await saveComments();
+      await saveGroups();
+    }, 30000);
+    
+    onBeforeUnmount(async() => {
+        await saveComments();
+        await saveGroups();
+        clearInterval(intervalId);
+    })
+
     const { selectedEntry, isLorebookLoaded } = storeToRefs(entryStore);
     onBeforeMount(async() => {
       await storyStore.getStories();

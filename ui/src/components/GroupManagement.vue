@@ -13,6 +13,7 @@
     import { useStoryStore } from '../stores/storyStore';
     import { useNotificationStore } from '../stores/notificationStore';
 
+    const notificationStore = useNotificationStore();
     const currentGroups = ref<Array<IEntryGroup>>([]);
 
     const storyStore = useStoryStore();
@@ -23,33 +24,7 @@
 
     const entryGroupingStore = useEntryGroupingStore();
     const { hasPendingChanges, isGroupsLoaded, groups } = storeToRefs(entryGroupingStore);
-    const notificationStore = useNotificationStore();
     
-    async function commitGroups() {
-        if(hasPendingChanges.value)
-        {
-            await entryGroupingStore.saveGroups();
-            hasPendingChanges.value = false;
-            notificationStore.set({
-                title: "Groups saved",
-                message: "Groups have been saved",
-                severity:"success",
-                visible: true,
-                lifetime: 3000
-            });
-        }
-    }
-
-    const intervalId = setInterval(async() => {
-        await commitGroups();
-    }, 30000)
-
-    onBeforeUnmount(async () => {
-        await commitGroups();
-        clearInterval(intervalId);
-    });
-
-
     onBeforeMount(async() => {
         if(!isGroupsLoaded.value && selectedStory.value) {
             await entryGroupingStore.getGroups(selectedStory.value?.id)
