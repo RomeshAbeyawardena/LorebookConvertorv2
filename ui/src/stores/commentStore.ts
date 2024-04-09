@@ -41,24 +41,26 @@ export const useCommentStore = defineStore("comment-store", ():ICommentStore =>
     }
 
     async function getComments(storyId:string) : Promise<Array<IComment>> {
-        if(isCommentsLoaded.value) {
-            return comments.value;
-        }
-        
-        const keys = await backend.keys();
-         
-        for(let key of keys) {
-            const item = await getComment(key);
-            if(item && item.storyId == storyId)
-            {
-                comments.value.push(item);
+        return await navigator.locks.request("comments_".concat(storyId), async() => {
+            if(isCommentsLoaded.value) {
+                return comments.value;
             }
-        }
+            
+            const keys = await backend.keys();
+            
+            for(let key of keys) {
+                const item = await getComment(key);
+                if(item && item.storyId == storyId)
+                {
+                    comments.value.push(item);
+                }
+            }
 
-        isCommentsLoaded.value = comments.value.length > 0;
-        orderComments();
-        return comments.value;
-    };
+            isCommentsLoaded.value = comments.value.length > 0;
+            orderComments();
+            return comments.value;
+        });
+    }
 
     async function saveComments() {
         var mapped: IComment[] = comments.value.map(c => cloneDeep(c) as IComment);
