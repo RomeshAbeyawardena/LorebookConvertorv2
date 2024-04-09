@@ -30,7 +30,7 @@
         <div class="col w-full">
             <Dropdown   v-model="selectedStory"
                         @change="changeHandler"
-                        class="w-full"
+                        class="ml-4 w-full"
                         :options="stories?.data" 
                         option-label="title" 
                         placeholder="Select a story" />

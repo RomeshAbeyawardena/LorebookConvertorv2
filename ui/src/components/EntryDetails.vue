@@ -13,7 +13,7 @@
     import { useCommentStore } from "../stores/commentStore";
     import KeyListComponent from "./KeyListComponent.vue";
     import GroupManagement from "./GroupManagement.vue";
-
+    import { useEntryGroupingStore } from "../stores/EntryGroupingStore";
     const entryStore = useEntryStore();
     const { selectedEntry } = storeToRefs(entryStore);
 
@@ -21,11 +21,17 @@
     const { comments } = storeToRefs(commentStore);
     const entryCommentsLength = computed(() => {
         return comments.value.filter(c => c.entryId == selectedEntry.value?.Id).length;
-    })
+    });
+
+    const entryGroupingStore = useEntryGroupingStore();
+    const { groups } = storeToRefs(entryGroupingStore)
+    
     const props = defineProps({
         entry: { type: Object, required: true },
         isStandAlone: { type: Boolean }
     });
+
+
 
     function closeDetailsPanel() 
     {
@@ -39,6 +45,8 @@
 
     const entry = computed(() => props.entry as IEntry);
     
+    const currentGroups = computed(() => groups.value.filter(g => g.entryIds.some(e => e == entry.value.Id)));
+
     function createParagraphs(items:Array<string>) {
         const startTag = '<p class="entry-content-paragrah">';
         let str = "";
@@ -150,7 +158,7 @@
                                 <Comments :entryId="entry.Id" />
                 </CounterGroup>
                 <CounterGroup   legend="Groups" toggle-icon="pi pi-th-large"
-                                badge-value="22">
+                                :badge-value="currentGroups.length.toString()">
                     <GroupManagement :entry-id="entry.Id" />
                 </CounterGroup>
         </template>

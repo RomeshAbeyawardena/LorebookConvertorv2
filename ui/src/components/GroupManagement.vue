@@ -7,9 +7,9 @@
     import InputGroup from 'primevue/inputgroup';
     import InputGroupAddon from 'primevue/inputgroupaddon';
 
-    import { ref, onBeforeMount, watch, onBeforeUnmount } from 'vue';
+    import { computed, ref, onBeforeMount, onBeforeUnmount } from 'vue';
     import MultiSelect from 'primevue/multiselect';
-    import { EntryGroup, IEntryGroup } from '../models/EntryGroup';
+    import { EntryGroup } from '../models/EntryGroup';
     import { useStoryStore } from '../stores/storyStore';
     import { useNotificationStore } from '../stores/notificationStore';
 
@@ -19,7 +19,6 @@
         entryId: { type: String, required:true }
     });
 
-    const currentGroups = ref<Array<IEntryGroup>>([]);
     const entryGroupingStore = useEntryGroupingStore();
     const { hasPendingChanges, isGroupsLoaded, groups } = storeToRefs(entryGroupingStore);
     const notificationStore = useNotificationStore();
@@ -48,18 +47,16 @@
         clearInterval(intervalId);
     });
 
+
+    const currentGroups = computed(() => groups.value.filter(g => g.entryIds.some(e => e == props.entryId)));
+
     onBeforeMount(async() => {
         if(!isGroupsLoaded.value && selectedStory.value) {
             await entryGroupingStore.getGroups(selectedStory.value?.id)
         }
 
-        currentGroups.value = groups.value.filter(g => g.entryIds.some(e => e == props.entryId));
     });
     
-    watch(() => props.entryId, (entryId) => {
-        currentGroups.value = groups.value.filter(g => g.entryIds.some(e => e == entryId));
-    })
-
     const groupName = ref("");
     function addGroup() {
         if(selectedStory.value?.id)

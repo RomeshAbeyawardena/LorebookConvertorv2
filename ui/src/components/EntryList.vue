@@ -69,7 +69,7 @@
 
 </script>
 <template>
-    <Accordion v-if="isLorebookLoaded" v-model:activeIndex="categoryIndex">
+    <Accordion class="mt-2" v-if="isLorebookLoaded" v-model:activeIndex="categoryIndex">
         <AccordionTab   :header="group.Category?.Name"
                         v-for="group in filteredCategories">
             <template #header>
