@@ -36,7 +36,6 @@
         }
     }
     
-
     async function saveComments() {
         if(hasPendingComments.value)
         {
@@ -51,15 +50,17 @@
             });
         }
     }
-        
-    const intervalId = setInterval(async() => {
+    
+    async function saveAll() {
       await saveComments();
       await saveGroups();
+    }
+    const intervalId = setInterval(async() => {
+      await saveAll();
     }, 30000);
     
     onBeforeUnmount(async() => {
-        await saveComments();
-        await saveGroups();
+        await saveAll();
         clearInterval(intervalId);
     })
 

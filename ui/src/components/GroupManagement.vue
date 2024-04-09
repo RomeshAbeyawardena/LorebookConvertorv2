@@ -7,7 +7,7 @@
     import InputGroup from 'primevue/inputgroup';
     import InputGroupAddon from 'primevue/inputgroupaddon';
 
-    import { ref, onBeforeMount, onBeforeUnmount, watch } from 'vue';
+    import { ref, onBeforeMount, watch } from 'vue';
     import MultiSelect from 'primevue/multiselect';
     import { EntryGroup, IEntryGroup } from '../models/EntryGroup';
     import { useStoryStore } from '../stores/storyStore';
