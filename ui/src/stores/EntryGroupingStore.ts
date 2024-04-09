@@ -4,6 +4,7 @@ import { EntryGroup, IEntryGroup } from "../models/EntryGroup";
 import localForage from "localforage";
 import { useStoryStore } from "./storyStore";
 import { cloneDeep } from "lodash";
+
 export interface IEntryGroupingStore {
     addToGroup:(entryId:string, groupId?:string, groupName?:string) => void;
     findGroup:(groupId?:string, groupName?:string) => IEntryGroup|undefined;
@@ -43,12 +44,12 @@ export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEnt
         }
     }
 
-    async function getGroups(storyId:string) {
+    async function getGroups(storyId:string) {   
         return await navigator.locks.request("getGroups", async() => {
             if(!isGroupsLoaded.value)
             {
                 const keys = await backend.keys();
-                console.log(keys);
+
                 for(let key of keys) {
                     const item = await getGroup(key);
                     if(item && item.storyId == storyId)
@@ -56,8 +57,9 @@ export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEnt
                         groups.value.push(item);
                     }
                 }
+                isGroupsLoaded.value = true;
             }
-            isGroupsLoaded.value = true;
+
             return groups.value;
         });
     }
