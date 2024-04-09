@@ -32,7 +32,6 @@
     });
 
 
-
     function closeDetailsPanel() 
     {
         selectedEntry.value = undefined;
