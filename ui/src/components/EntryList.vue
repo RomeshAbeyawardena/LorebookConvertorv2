@@ -2,13 +2,17 @@
     import Accordion from 'primevue/accordion';
     import AccordionTab from 'primevue/accordiontab';
     import Badge from 'primevue/badge';
+    import Button from 'primevue/button';
     import Panel from 'primevue/panel';
     import EntryDetails from "./EntryDetails.vue";
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
     import { onBeforeMount, ref, watch } from "vue";
     import { useSearchStore } from "../stores/searchStore";
-import { ILorebookGroup } from '../models/groups';
+    import { ILorebookGroup } from '../models/groups';
+    import { IEntryGroup } from '../models/EntryGroup';
+    import { useEntryGroupingStore } from '../stores/EntryGroupingStore';
+    
     const searchStore = useSearchStore();
     const entryStore = useEntryStore();
     const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry
@@ -77,14 +81,33 @@ import { ILorebookGroup } from '../models/groups';
         return isGroup ? "info" : "secondary";
     }
 
+    const groupToBeRenamed = ref<IEntryGroup|undefined>();
+    const entryGroupingStore = useEntryGroupingStore();
+    
+    function toggleRename(groupId?:string) {
+        
+        if(!groupId) {
+            return;
+        }
+
+        if(groupToBeRenamed.value && groupToBeRenamed.value.groupId == groupId) {
+            groupToBeRenamed.value = undefined;
+        }
+
+        groupToBeRenamed.value = entryGroupingStore.findGroup(groupId);
+    }
+
 </script>
 <template>
     <Accordion  class="mt-2" v-if="isLorebookLoaded" 
                 v-model:activeIndex="categoryIndex">
         <AccordionTab   :header="group.Category?.Name"
                         v-for="group in categories">
-            <template #header>
-                <Badge :severity="setSeverity(group.isGroup)" :value="group.Entries.length"></Badge>
+            <template #header>                
+                    <Button @click="toggleRename(group.groupId)" v-if="group.groupId" icon="pi pi-pencil"></Button>
+            </template>
+            <template #headericon>
+                <Badge :severity="setSeverity(group.groupId != undefined)" :value="group.Entries.length"></Badge>
             </template>
             <input type="hidden" :id="group.CategoryId" />
             <Panel  v-for="entry, key in group.Entries" 

@@ -93,7 +93,7 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
                                 Id: "",
                                 Name:group.name,
                             },
-                            isGroup:true,
+                            groupId: group.groupId,
                             CategoryId: "",
                             Entries: group.entryIds.map(e => entryStore.lorebook.Entries.find(le => le.Id == e) as IEntry)
                         });
