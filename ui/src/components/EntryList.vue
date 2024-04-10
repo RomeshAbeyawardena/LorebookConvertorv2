@@ -3,6 +3,7 @@
     import AccordionTab from 'primevue/accordiontab';
     import Badge from 'primevue/badge';
     import Button from 'primevue/button';
+    import ButtonGroup from 'primevue/buttongroup';
     import Panel from 'primevue/panel';
     import EntryDetails from "./EntryDetails.vue";
     import { useEntryStore } from "../stores/entryStore";
@@ -84,17 +85,32 @@
     const groupToBeRenamed = ref<IEntryGroup|undefined>();
     const entryGroupingStore = useEntryGroupingStore();
     
+    function isCurrentGroupBeingRenamed(groupId:string) {
+        return groupToBeRenamed.value && groupToBeRenamed.value.groupId == groupId;
+    };
+    
+    function setIcon(groupId:string) {
+        return isCurrentGroupBeingRenamed(groupId) 
+            ? "pi pi-times"
+            : "pi pi-pencil";
+    }
+
+    function setButtonSeverity(groupId:string) {
+        return isCurrentGroupBeingRenamed(groupId) 
+            ? "danger"
+            : "primary";
+    }
+
     function toggleRename(groupId?:string) {
-        
         if(!groupId) {
             return;
         }
 
-        if(groupToBeRenamed.value && groupToBeRenamed.value.groupId == groupId) {
+        if(isCurrentGroupBeingRenamed(groupId)) {
             groupToBeRenamed.value = undefined;
         }
-
-        groupToBeRenamed.value = entryGroupingStore.findGroup(groupId);
+        else
+            groupToBeRenamed.value = entryGroupingStore.findGroup(groupId);
     }
 
 </script>
@@ -103,8 +119,16 @@
                 v-model:activeIndex="categoryIndex">
         <AccordionTab   :header="group.Category?.Name"
                         v-for="group in categories">
-            <template #header>                
-                    <Button @click="toggleRename(group.groupId)" v-if="group.groupId" icon="pi pi-pencil"></Button>
+            <template #header>
+                <ButtonGroup>
+                    <Button v-if="isCurrentGroupBeingRenamed(group.groupId) && group.groupId"
+                            icon="pi pi-save">
+                    </Button>           
+                    <Button @click="toggleRename(group.groupId)" 
+                            v-if="group.groupId" 
+                            :severity="setButtonSeverity(group.groupId)"
+                            :icon="setIcon(group.groupId)"></Button>
+                </ButtonGroup>
             </template>
             <template #headericon>
                 <Badge :severity="setSeverity(group.groupId != undefined)" :value="group.Entries.length"></Badge>
