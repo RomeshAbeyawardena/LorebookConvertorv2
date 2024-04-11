@@ -9,7 +9,7 @@ import { useStoryStore } from "./storyStore";
 import { IEntry } from "../models/entry";
 
 export interface ISearchStore {
-    filteredCategories:ComputedRef<Promise<Array<ILorebookGroup>>>;
+    filteredCategories:ComputedRef<Array<ILorebookGroup>>;
     getOrAddSearchIndex:ComputedRef<Array<ISearchIndex>>;
     getOrMapIndexes:ComputedRef<Array<IMappedIndex>>;
     generateSearchIndex:() => void;
@@ -67,7 +67,7 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
     const storyStore = useStoryStore();
     const entryGroupingStore = useEntryGroupingStore();
     const searchText = ref("");
-    const filteredCategories = computed(async () => {
+    const filteredCategories = computed(() => {
         if(!entryStore.isLorebookLoaded)
         {
             return [];
@@ -82,7 +82,7 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
             const allGroups:Array<ILorebookGroup> =[]
             if(storyStore.selectedStory)
             {
-                const groups = await entryGroupingStore.getGroups(storyStore.selectedStory?.id)
+                const groups = entryGroupingStore.groups
                 
                 if(groups.length > 0) {
                     allGroups.push(... entryStore.lorebook.Groupings)

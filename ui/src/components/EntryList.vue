@@ -11,23 +11,30 @@
     import { storeToRefs } from "pinia";
     import { onBeforeMount, ref, watch } from "vue";
     import { useSearchStore } from "../stores/searchStore";
-    import { ILorebookGroup } from '../models/groups';
     import { IEntryGroup } from '../models/EntryGroup';
     import { useEntryGroupingStore } from '../stores/EntryGroupingStore';
-    
+    import { useStoryStore } from '../stores/storyStore';
     const searchStore = useSearchStore();
     const entryStore = useEntryStore();
+    const entryGroupingStore = useEntryGroupingStore();
+    const storyStore = useStoryStore();
+    const { selectedStory } = storeToRefs(storyStore);
+    const { hasPendingChanges } = storeToRefs(entryGroupingStore);
+
     const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry
     } = storeToRefs(entryStore);
 
-    const categories = ref<Array<ILorebookGroup>>([]);
+    
     const {
         filteredCategories, selectedSearchItem, searchText
     } = storeToRefs(searchStore);
 
     onBeforeMount(async() => {
-        categories.value = await filteredCategories.value
-    })
+        if(selectedStory.value)
+        {
+            await entryGroupingStore.getGroups(selectedStory.value.id);
+        }
+    });
 
     function isCollapsed(id:number) {
         return entryIndex.value != id;
@@ -84,8 +91,7 @@
     }
 
     const groupToBeRenamed = ref<IEntryGroup|undefined>();
-    const entryGroupingStore = useEntryGroupingStore();
-    
+
     function isCurrentGroupBeingRenamed(groupId:string) {
         return groupToBeRenamed.value && groupToBeRenamed.value.groupId == groupId;
     };
@@ -114,11 +120,28 @@
             groupToBeRenamed.value = entryGroupingStore.findGroup(groupId);
     }
 
+    function saveGroup() {
+        const group = groupToBeRenamed.value;
+        if(!group)
+        {
+            return;
+        }
+
+        const foundGroup = entryGroupingStore.findGroup(group.groupId);
+        
+        if(foundGroup)
+        {
+            foundGroup.name = group.name;
+            hasPendingChanges.value = true;
+        }
+
+        groupToBeRenamed.value = undefined;
+    }
 </script>
 <template>
     <Accordion  class="mt-2" v-if="isLorebookLoaded" 
                 v-model:activeIndex="categoryIndex">
-        <AccordionTab  v-for="group in categories">
+        <AccordionTab  v-for="group in filteredCategories">
             <template #header>
                 <p>
                     <span v-if="!isCurrentGroupBeingRenamed(group.groupId)">{{  group.Category?.Name }}</span>
@@ -126,7 +149,8 @@
                 </p>
                 <ButtonGroup>
                     <Button v-if="isCurrentGroupBeingRenamed(group.groupId) && group.groupId"
-                            icon="pi pi-save">
+                            icon="pi pi-save"
+                            @click="saveGroup">
                     </Button>           
                     <Button @click="toggleRename(group.groupId)" 
                             v-if="group.groupId" 
