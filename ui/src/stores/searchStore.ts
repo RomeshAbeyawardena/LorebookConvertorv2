@@ -7,7 +7,7 @@ import { ISearchIndex } from "../models/searchIndex";
 import { useEntryGroupingStore } from "./EntryGroupingStore";
 import { useStoryStore } from "./storyStore";
 import { IEntry } from "../models/entry";
-
+import { orderBy } from "lodash";
 export interface ISearchStore {
     filteredCategories:ComputedRef<Array<ILorebookGroup>>;
     getOrAddSearchIndex:ComputedRef<Array<ISearchIndex>>;
@@ -99,7 +99,7 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
                         });
                     }
                     
-                    return allGroups;
+                    return orderBy(allGroups, [a => a.Category.Name], "asc");
                 }
             }
             
