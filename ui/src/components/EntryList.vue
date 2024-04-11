@@ -6,6 +6,7 @@
     import ButtonGroup from 'primevue/buttongroup';
     import Panel from 'primevue/panel';
     import EntryDetails from "./EntryDetails.vue";
+    import InputText from 'primevue/inputtext';
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
     import { onBeforeMount, ref, watch } from "vue";
@@ -117,9 +118,12 @@
 <template>
     <Accordion  class="mt-2" v-if="isLorebookLoaded" 
                 v-model:activeIndex="categoryIndex">
-        <AccordionTab   :header="group.Category?.Name"
-                        v-for="group in categories">
+        <AccordionTab  v-for="group in categories">
             <template #header>
+                <p>
+                    <span v-if="!isCurrentGroupBeingRenamed(group.groupId)">{{  group.Category?.Name }}</span>
+                    <InputText v-if="isCurrentGroupBeingRenamed(group.groupId) && groupToBeRenamed" v-model="groupToBeRenamed.name"></InputText>
+                </p>
                 <ButtonGroup>
                     <Button v-if="isCurrentGroupBeingRenamed(group.groupId) && group.groupId"
                             icon="pi pi-save">
@@ -128,10 +132,12 @@
                             v-if="group.groupId" 
                             :severity="setButtonSeverity(group.groupId)"
                             :icon="setIcon(group.groupId)"></Button>
+                    <Button severity="secondary" disabled v-if="!group.groupId"></Button>
                 </ButtonGroup>
             </template>
             <template #headericon>
-                <Badge :severity="setSeverity(group.groupId != undefined)" :value="group.Entries.length"></Badge>
+                <Badge :severity="setSeverity(group.groupId != undefined)" :value="group.Entries.length">
+                </Badge>
             </template>
             <input type="hidden" :id="group.CategoryId" />
             <Panel  v-for="entry, key in group.Entries" 
