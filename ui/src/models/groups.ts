@@ -5,4 +5,5 @@ export interface ILorebookGroup {
     CategoryId:string;
     Category:ICategory;
     Entries:Array<IEntry>;
+    groupId:string;
 }

@@ -46,11 +46,10 @@ export class Backend implements IBackend {
         return new Promise<Event>((resolve, reject) => {
             if(this.db)
             {
-                this.db.addEventListener("close", e => { console.log(e); resolve(e); });
+                this.db.addEventListener("close", e => { resolve(e); });
                 this.db.addEventListener("error", reject);
                 this.db.close();
                 this.db = undefined;
-                console.log("closed");
                 resolve(new Event("closed"));
             }
             else 
@@ -96,7 +95,6 @@ export class Backend implements IBackend {
     put<T>(store:IDBObjectStore, items:Array<T>, key:string) : Promise<Event> {
         return new Promise((resolve, reject) => {
             items.forEach(c => {
-                console.log(c);
                     const valid = store.put(c, key);
                     valid?.addEventListener("success", resolve);
                     valid?.addEventListener("error", reject);

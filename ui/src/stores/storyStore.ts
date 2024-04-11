@@ -22,21 +22,23 @@ export const useStoryStore = defineStore("story-store", ():IStoryStore => {
     const stories = ref<IStory|undefined>();
     const selectedStory = ref<IStoryEntry|undefined>(undefined);
     async function getStories() {
-        if(isStoriesLoaded.value && stories.value) {
-            return stories.value;
-        }
-
-        const response = await axios.get("stories.json");
-        if (response.data) {
-            isStoriesLoaded.value = true;
-            stories.value = JSON.parse(response.data) as IStory;
-            
-            return stories.value;
-        }
-
-        return {
-            data: []
-        }
+        return await navigator.locks.request("getStories", async() => {
+            if(isStoriesLoaded.value && stories.value) {
+                return stories.value;
+            }
+    
+            const response = await axios.get("stories.json");
+            if (response.data) {
+                isStoriesLoaded.value = true;
+                stories.value = JSON.parse(response.data) as IStory;
+                
+                return stories.value;
+            }
+    
+            return {
+                data: []
+            }
+        });
     }
 
     const getOrAddStories = computed(async() => {

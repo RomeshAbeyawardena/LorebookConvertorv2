@@ -9,23 +9,29 @@
     import { storeToRefs } from "pinia";
     import { StringService } from "../services/StringService";
     import Comments from "./Comments.vue";
-    import Fieldset from 'primevue/fieldset';
-    import Badge from 'primevue/badge';
+    import CounterGroup from "./CounterGroup.vue";
     import { useCommentStore } from "../stores/commentStore";
     import KeyListComponent from "./KeyListComponent.vue";
-
+    import GroupManagement from "./GroupManagement.vue";
+    import { useEntryGroupingStore } from "../stores/EntryGroupingStore";
     const entryStore = useEntryStore();
     const { selectedEntry } = storeToRefs(entryStore);
 
     const commentStore = useCommentStore();
     const { comments } = storeToRefs(commentStore);
-    const entryCommenntsLength = computed(() => {
+    const entryCommentsLength = computed(() => {
         return comments.value.filter(c => c.entryId == selectedEntry.value?.Id).length;
-    })
+    });
+
+    const entryGroupingStore = useEntryGroupingStore();
+    const { groups } = storeToRefs(entryGroupingStore)
+    
     const props = defineProps({
+        readOnly: Boolean,
         entry: { type: Object, required: true },
         isStandAlone: { type: Boolean }
     });
+
 
     function closeDetailsPanel() 
     {
@@ -39,6 +45,8 @@
 
     const entry = computed(() => props.entry as IEntry);
     
+    const currentGroups = computed(() => groups.value.filter(g => g.entryIds.some(e => e == entry.value.Id)));
+
     function createParagraphs(items:Array<string>) {
         const startTag = '<p class="entry-content-paragrah">';
         let str = "";
@@ -144,28 +152,15 @@
                     <p class="border-round border-dotted border-primary p-2 m-0 mt-4 font-semibold text-center">
                         To read more click the <i class="pi pi-expand mr-2 ml-2"></i> 'View details' button</p>
                 </div>
-                <Fieldset   legend="Comments" 
-                            class="custom-fieldset"
-                            v-if="props.isStandAlone" 
-                            :collapsed="true"
-                            toggleable>
-                    <template #legend>
-                        <div class="flex justify-content-between align-items-center flex-wrap">
-                            <h3 class="flex mr-2">Comments</h3>
-                            <div class="flex flex-grow-1"></div>
-                            <div class="flex align-items-center">
-                                <Badge  class="flex align-items-center" 
-                                        :value="entryCommenntsLength.toString()" />
-                            </div>
-                        </div>
-                    </template>
-                    <template #togglericon>
-                        <div class="flex mr-2">
-                            <i class="pi pi-comments"></i>
-                        </div>
-                    </template>
-                    <Comments :entryId="entry.Id" />
-                </Fieldset>
+                <CounterGroup   legend="Comments" toggle-icon="pi pi-comments"
+                                :badge-value="entryCommentsLength.toString()"
+                                v-if="props.isStandAlone">
+                                <Comments :entryId="entry.Id" />
+                </CounterGroup>
+                <CounterGroup   legend="Groups" toggle-icon="pi pi-th-large"
+                                :badge-value="currentGroups.length.toString()">
+                    <GroupManagement :entry-id="entry.Id" :read-only="readOnly" />
+                </CounterGroup>
         </template>
         <template #footer>
             <div class="flex flex-wrap align-items-center justify-content-between gap-3">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, onUnmounted } from "vue";
+    import { ref } from "vue";
     import { useStoryStore } from "../stores/storyStore";
     import { useCommentStore } from "../stores/commentStore";
     import { storeToRefs } from "pinia";
@@ -8,13 +8,11 @@
     import Editor from 'primevue/editor';
     import Button from "primevue/button";
     import { Comment } from "../models/comment";
-    import { useNotificationStore } from "../stores/notificationStore";
     import { computed, watch } from "vue";
     
     const title = ref("");
     const message = ref("");
     const commentStore = useCommentStore();
-    const notificationStore = useNotificationStore();
     const { hasPendingComments, selectedComment } = storeToRefs(commentStore);
 
     watch(selectedComment, (newValue) => {
@@ -28,28 +26,6 @@
             message.value = "";
         }
     });
-
-    async function saveComments() {
-        if(hasPendingComments.value)
-        {
-            await commentStore.saveComments();
-            hasPendingComments.value = false;
-            notificationStore.set({
-                title: "Comments saved",
-                message: "Comments have been saved",
-                severity:"success",
-                visible: true,
-                lifetime: 1000
-            });
-        }
-    }
-    
-    const intervalId = setInterval(saveComments, 30000);
-
-    onUnmounted(async() => {
-        await saveComments();
-        clearInterval(intervalId);
-    })
 
     const props = defineProps({
         commentId:String,
