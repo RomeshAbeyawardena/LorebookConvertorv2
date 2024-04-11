@@ -27,6 +27,7 @@
     const { groups } = storeToRefs(entryGroupingStore)
     
     const props = defineProps({
+        readOnly: Boolean,
         entry: { type: Object, required: true },
         isStandAlone: { type: Boolean }
     });
@@ -158,7 +159,7 @@
                 </CounterGroup>
                 <CounterGroup   legend="Groups" toggle-icon="pi pi-th-large"
                                 :badge-value="currentGroups.length.toString()">
-                    <GroupManagement :entry-id="entry.Id" />
+                    <GroupManagement :entry-id="entry.Id" :read-only="readOnly" />
                 </CounterGroup>
         </template>
         <template #footer>

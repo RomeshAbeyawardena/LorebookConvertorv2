@@ -19,6 +19,7 @@
     const storyStore = useStoryStore();
     const { selectedStory } = storeToRefs(storyStore);
     const props = defineProps({
+        readOnly: Boolean,
         entryId: { type: String, required:true }
     });
 
@@ -103,6 +104,7 @@
                         class="w-full"
                         v-model="currentGroups" 
                         :options="groups" 
+                        :disabled="readOnly"
                         placeholder="Group">
             <template #empty>
                 No groups found.
@@ -110,7 +112,7 @@
             <template #footer>
                 <div class="ml-2 mr-2 mb-2">
                     <p class="m-0 p-0 mb-2 mt-2 pl-2">Add a group</p>
-                    <InputGroup>
+                    <InputGroup v-if="!readOnly">
                         <InputText v-model="groupName" class="w-full" placeholder="Group name"></InputText>
                         <InputGroupAddon>
                             <Button icon="pi pi-plus" :disabled="groupName.length < 1" @click="addGroup" />
@@ -122,6 +124,6 @@
     </div>
     <div>
         <!-- Modify groups-->
-        <Button label="Save groups" @click="saveGroups" icon="pi pi-disk"></Button>
+        <Button label="Save groups" v-if="!readOnly" @click="saveGroups" icon="pi pi-disk"></Button>
     </div>
 </template>

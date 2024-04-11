@@ -174,7 +174,7 @@
                             {{ entry.DisplayName }}
                         </a>
                     </template>
-                    <EntryDetails :entry="entry" />
+                    <EntryDetails :entry="entry" :read-only="true" />
             </Panel>
         </AccordionTab>
     </Accordion>
