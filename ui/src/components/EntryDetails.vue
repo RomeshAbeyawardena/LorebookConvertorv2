@@ -142,7 +142,7 @@
         </template>
         <template #content>
                 <input type="hidden" :id="entry.Id" />
-                <h3 v-if="isStandAlone">Summary</h3>
+                <h2 v-if="isStandAlone">Summary</h2>
                 <div v-html="props.isStandAlone ? entryText : summaryText"></div>
                 <div v-if="props.isStandAlone">
                     <h3>{{ singularCategoryName }} keys</h3>
