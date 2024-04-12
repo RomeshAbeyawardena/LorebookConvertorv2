@@ -76,7 +76,7 @@
                 currentGroups.value.push(entryGroup);
             }
         }
-
+        hasPendingChanges.value = true;
         groupName.value = "";
     }
 
