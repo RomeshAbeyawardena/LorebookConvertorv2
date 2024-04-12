@@ -2,6 +2,7 @@
     import Accordion from 'primevue/accordion';
     import AccordionTab from 'primevue/accordiontab';
     import Badge from 'primevue/badge';
+    import Button from "primevue/button";
     import Panel from 'primevue/panel';
     import EntryDetails from "./EntryDetails.vue";
     import GroupEditLabel from "./GroupEditLabel.vue";
@@ -96,7 +97,9 @@
         <AccordionTab :tabindex="-1"  v-for="group in filteredCategories">
             <template #header>
                <GroupEditLabel v-if="group.groupId" :group-id="group.groupId" />
-               <p v-if="!group.groupId">{{ group.Category.Name }}</p>
+               <p   class="flex flex-auto justify-content-center align-self-center align-items-center" 
+                    v-if="!group.groupId">{{ group.Category.Name }}</p>
+                <Button class="ml-2" severity="secondary" size="small" icon="pi pi-book" v-if="!group.groupId" />
             </template>
             <template #headericon>
                 <Badge class="ml-2" :severity="setSeverity(group.groupId != undefined)" :value="group.Entries.length" />
