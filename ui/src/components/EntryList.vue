@@ -16,6 +16,7 @@
     const searchStore = useSearchStore();
     const entryStore = useEntryStore();
     const entryGroupingStore = useEntryGroupingStore();
+
     const storyStore = useStoryStore();
     const { selectedStory } = storeToRefs(storyStore);
     
@@ -92,7 +93,7 @@
 <template>
     <Accordion  class="mt-2" v-if="isLorebookLoaded" 
                 v-model:activeIndex="categoryIndex">
-        <AccordionTab  v-for="group in filteredCategories">
+        <AccordionTab :tabindex="-1"  v-for="group in filteredCategories">
             <template #header>
                <GroupEditLabel v-if="group.groupId" :group-id="group.groupId" />
                <p v-if="!group.groupId">{{ group.Category.Name }}</p>

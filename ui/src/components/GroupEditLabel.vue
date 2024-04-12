@@ -18,7 +18,8 @@ import { storeToRefs } from "pinia";
     const splitButtonOptions = ref([
         {
             label:"Cancel",
-            icon: "pi pi-times"
+            icon: "pi pi-times",
+            command: cancel
         }
     ]);
     
@@ -29,7 +30,9 @@ import { storeToRefs } from "pinia";
     const isBeingRenamed = computed(() => {
         return renamedGroup.value && props.groupId == renamedGroup.value.groupId;
     });
-
+    function cancel() {
+        renamedGroup.value = undefined;
+    }
     function saveGroup() {
         const group = renamedGroup.value;
         if(!group)
@@ -41,31 +44,42 @@ import { storeToRefs } from "pinia";
         
         if(foundGroup)
         {
-            foundGroup.name = group.name;
+            foundGroup.name = renamed.value;
             hasPendingChanges.value = true;
         }
 
         renamedGroup.value = undefined;
     }
+    
+    const renamed = ref("");
 
     function toggleRenamedGroupItem() {
         if(renamedGroup.value == group.value){
             renamedGroup.value = undefined;
         }
-        else
+        else {
             renamedGroup.value = group.value;
+            renamed.value = group.value!.name;
+        }
     }
 
+    const setBorder = computed(() => {
+        return isBeingRenamed ? "border-none" : "";
+    });
 </script>
 <template>
     <InputGroup>
-        <InputGroupAddon v-if="!isBeingRenamed">
+        <InputGroupAddon :class="setBorder" v-if="!isBeingRenamed">
             <Button size="small" icon="pi pi-pencil" @click="toggleRenamedGroupItem" />
         </InputGroupAddon>
-        <InputText size="small" v-if="renamedGroup" v-model="renamedGroup.name" />
+        <InputText :disabled="false" 
+                    :tabindex="99999"
+                    size="small" 
+                    v-if="isBeingRenamed && renamedGroup" 
+                    v-model="renamed" />
         <span class="flex flex-auto justify-content-center align-self-center align-items-center" v-if="group && !isBeingRenamed">{{ group.name }}</span>
         <InputGroupAddon v-if="isBeingRenamed">
-            <SplitButton size="small" @click="saveGroup" :model="splitButtonOptions">
+            <SplitButton :disabled="false" size="small" @click="saveGroup" :model="splitButtonOptions">
                 <i class="pi pi-save"></i>
             </SplitButton>
         </InputGroupAddon>
