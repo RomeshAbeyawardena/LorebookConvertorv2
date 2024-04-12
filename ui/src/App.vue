@@ -81,7 +81,7 @@
       <EntryDetails :is-stand-alone="true" 
                     :entry="selectedEntry"
                     v-if="selectedEntry != undefined" />
-      <EntryList v-if="isLorebookLoaded" />
+      <EntryList v-if="isLorebookLoaded && selectedEntry == undefined" />
   </div>
 </div>
 </template>

@@ -15,6 +15,7 @@ export interface IEntryGroupingStore {
     removeFromGroup:(entryId:string, groupId?:string, groupName?:string) => void;
     groups:Ref<Array<IEntryGroup>>;
     saveGroups():Promise<void>;
+    renamedGroup:Ref<IEntryGroup|undefined>;
 }
 
 export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEntryGroupingStore => {
@@ -25,7 +26,7 @@ export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEnt
         version:1.0,
         storeName:"entryGroups"
     });
-
+    const renamedGroup = ref<IEntryGroup|undefined>();
     const storyStore = useStoryStore();
 
     const { isStoriesLoaded, selectedStory } = storeToRefs(storyStore);
@@ -119,6 +120,7 @@ export const useEntryGroupingStore = defineStore("entry-grouping-store", ():IEnt
         findGroup,
         getGroup,
         getGroups,
+        renamedGroup,
         removeFromGroup,
         groups,
         saveGroups,
