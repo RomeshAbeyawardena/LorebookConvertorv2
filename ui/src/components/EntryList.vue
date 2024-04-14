@@ -2,25 +2,25 @@
     import Accordion from 'primevue/accordion';
     import AccordionTab from 'primevue/accordiontab';
     import Badge from 'primevue/badge';
-    import Button from 'primevue/button';
-    import ButtonGroup from 'primevue/buttongroup';
+    import Button from "primevue/button";
     import Panel from 'primevue/panel';
     import EntryDetails from "./EntryDetails.vue";
-    import InputText from 'primevue/inputtext';
+    import GroupEditLabel from "./GroupEditLabel.vue";
+
     import { useEntryStore } from "../stores/entryStore";
     import { storeToRefs } from "pinia";
-    import { onBeforeMount, ref, watch } from "vue";
+    import { onBeforeMount, watch } from "vue";
     import { useSearchStore } from "../stores/searchStore";
-    import { IEntryGroup } from '../models/EntryGroup';
     import { useEntryGroupingStore } from '../stores/EntryGroupingStore';
     import { useStoryStore } from '../stores/storyStore';
+    
     const searchStore = useSearchStore();
     const entryStore = useEntryStore();
     const entryGroupingStore = useEntryGroupingStore();
+
     const storyStore = useStoryStore();
     const { selectedStory } = storeToRefs(storyStore);
-    const { hasPendingChanges } = storeToRefs(entryGroupingStore);
-
+    
     const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry
     } = storeToRefs(entryStore);
 
@@ -89,79 +89,20 @@
     function setSeverity(isGroup:boolean) {
         return isGroup ? "info" : "secondary";
     }
-
-    const groupToBeRenamed = ref<IEntryGroup|undefined>();
-
-    function isCurrentGroupBeingRenamed(groupId:string) {
-        return groupToBeRenamed.value && groupToBeRenamed.value.groupId == groupId;
-    };
-    
-    function setIcon(groupId:string) {
-        return isCurrentGroupBeingRenamed(groupId) 
-            ? "pi pi-times"
-            : "pi pi-pencil";
-    }
-
-    function setButtonSeverity(groupId:string) {
-        return isCurrentGroupBeingRenamed(groupId) 
-            ? "danger"
-            : "primary";
-    }
-
-    function toggleRename(groupId?:string) {
-        if(!groupId) {
-            return;
-        }
-
-        if(isCurrentGroupBeingRenamed(groupId)) {
-            groupToBeRenamed.value = undefined;
-        }
-        else
-            groupToBeRenamed.value = entryGroupingStore.findGroup(groupId);
-    }
-
-    function saveGroup() {
-        const group = groupToBeRenamed.value;
-        if(!group)
-        {
-            return;
-        }
-
-        const foundGroup = entryGroupingStore.findGroup(group.groupId);
-        
-        if(foundGroup)
-        {
-            foundGroup.name = group.name;
-            hasPendingChanges.value = true;
-        }
-
-        groupToBeRenamed.value = undefined;
-    }
+ 
 </script>
 <template>
     <Accordion  class="mt-2" v-if="isLorebookLoaded" 
                 v-model:activeIndex="categoryIndex">
-        <AccordionTab  v-for="group in filteredCategories">
+        <AccordionTab :tabindex="-1"  v-for="group in filteredCategories">
             <template #header>
-                <p>
-                    <span v-if="!isCurrentGroupBeingRenamed(group.groupId)">{{  group.Category?.Name }}</span>
-                    <InputText v-if="isCurrentGroupBeingRenamed(group.groupId) && groupToBeRenamed" v-model="groupToBeRenamed.name"></InputText>
-                </p>
-                <ButtonGroup>
-                    <Button v-if="isCurrentGroupBeingRenamed(group.groupId) && group.groupId"
-                            icon="pi pi-save"
-                            @click="saveGroup">
-                    </Button>           
-                    <Button @click="toggleRename(group.groupId)" 
-                            v-if="group.groupId" 
-                            :severity="setButtonSeverity(group.groupId)"
-                            :icon="setIcon(group.groupId)"></Button>
-                    <Button severity="secondary" disabled v-if="!group.groupId"></Button>
-                </ButtonGroup>
+               <GroupEditLabel v-if="group.groupId" :group-id="group.groupId" />
+               <p   class="flex flex-auto justify-content-center align-self-center align-items-center" 
+                    v-if="!group.groupId">{{ group.Category.Name }}</p>
+                <Button class="ml-2" severity="secondary" size="small" icon="pi pi-book" v-if="!group.groupId" />
             </template>
             <template #headericon>
-                <Badge :severity="setSeverity(group.groupId != undefined)" :value="group.Entries.length">
-                </Badge>
+                <Badge class="ml-2" :severity="setSeverity(group.groupId != undefined)" :value="group.Entries.length" />
             </template>
             <input type="hidden" :id="group.CategoryId" />
             <Panel  v-for="entry, key in group.Entries" 

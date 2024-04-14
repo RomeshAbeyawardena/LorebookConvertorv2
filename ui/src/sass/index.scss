@@ -24,3 +24,14 @@ fieldset.custom-fieldset {
         justify-content: space-between;
     }
 }
+
+@media screen and (max-width: 412px)
+{
+    .xs\:hidden {
+        display: none !important;
+    }
+
+    .xs\:flex {
+        display: flex !important;
+    }
+}
