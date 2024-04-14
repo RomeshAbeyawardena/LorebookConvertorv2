@@ -128,21 +128,21 @@
 <template>
     <Card :class="setCardClass()">
         <template v-if="props.isStandAlone" #header>
-            <div class="flex flex-auto">
+            <div class="flex flex-auto align-items-center">
                 <Button @click="closeDetailsPanel"
-                        class="flex p-2 border-round max-h-2rem" 
+                        class="flex flex-auto align-items-center flex-grow-1 p-2 border-round max-h-2rem" 
                         severity="primary"
                         v-tooltip.top="'Go back'">
                     <i class="pi pi-arrow-circle-left"></i>
                 </Button>
-                <h1 class="flex align-self align-items-center flex-grow-1 m-0 ml-2 justify-content-end text-overflow-ellipsis">
+                <h3 class="flex align-self align-items-center flex-grow-1 m-0 ml-2 justify-content-end text-overflow-ellipsis">
                     {{ entry.DisplayName }}
-                </h1>
+                </h3>
             </div>
         </template>
         <template #content>
                 <input type="hidden" :id="entry.Id" />
-                <h3 v-if="isStandAlone">Summary</h3>
+                <h2 v-if="isStandAlone">Summary</h2>
                 <div v-html="props.isStandAlone ? entryText : summaryText"></div>
                 <div v-if="props.isStandAlone">
                     <h3>{{ singularCategoryName }} keys</h3>

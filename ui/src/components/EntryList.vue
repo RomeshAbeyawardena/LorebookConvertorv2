@@ -21,7 +21,7 @@
     const storyStore = useStoryStore();
     const { selectedStory } = storeToRefs(storyStore);
     
-    const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry
+    const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry, lorebook
     } = storeToRefs(entryStore);
 
     
@@ -89,7 +89,10 @@
     function setSeverity(isGroup:boolean) {
         return isGroup ? "info" : "secondary";
     }
- 
+
+    function viewEntry(entryId:string) {
+        selectedEntry.value = lorebook.value.Entries.find(f => f.Id == entryId);
+    }
 </script>
 <template>
     <Accordion  class="mt-2" v-if="isLorebookLoaded" 
@@ -99,7 +102,7 @@
                <GroupEditLabel v-if="group.groupId" :group-id="group.groupId" />
                <p   class="flex flex-auto justify-content-center align-self-center align-items-center" 
                     v-if="!group.groupId">{{ group.Category.Name }}</p>
-                <Button class="ml-2" severity="secondary" size="small" icon="pi pi-book" v-if="!group.groupId" />
+                <Button class="ml-2" severity="secondary" icon="pi pi-book" v-if="!group.groupId" />
             </template>
             <template #headericon>
                 <Badge class="ml-2" :severity="setSeverity(group.groupId != undefined)" :value="group.Entries.length" />
@@ -109,10 +112,15 @@
                     :data-id="entry.Id" 
                     :collapsed="isCollapsed(key)" toggleable
                     class="mb-2">
+                    <template #icons>
+                        <a href="javascript:void(0)" @click="viewEntry(entry.Id)" class="mr-2">
+                            <i class="pi pi-expand"></i>
+                        </a>
+                    </template>
                     <template #header>
-                        <a  class="block flex-grow-1 no-underline text-color" 
+                        <a  class="flex flex-grow-1 no-underline text-color" 
                             @click="toggle(key)" href="javascript:void(0)">
-                            {{ entry.DisplayName }}
+                            <div style="width:60vw" class="white-space-nowrap overflow-hidden text-overflow-ellipsis">{{ entry.DisplayName }}</div>
                         </a>
                     </template>
                     <EntryDetails :entry="entry" :read-only="true" />
