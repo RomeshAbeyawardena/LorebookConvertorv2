@@ -136,7 +136,7 @@
                     <i class="pi pi-arrow-circle-left"></i>
                 </Button>
                 <h1 v-tooltip:right="entry.DisplayName" class="flex align-self align-items-center flex-grow-1 m-0 ml-2 justify-content-end text-right">
-                    <a href="javascript:void(0)" style="width:85dvw" class="no-underline text-color text-overflow-ellipsis white-space-nowrap overflow-hidden">
+                    <a href="javascript:void(0)" style="width:80dvw" class="no-underline text-color text-overflow-ellipsis white-space-nowrap overflow-hidden">
                         {{ entry.DisplayName }}
                     </a>
                 </h1>
