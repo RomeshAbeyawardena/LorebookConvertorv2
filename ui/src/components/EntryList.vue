@@ -21,7 +21,7 @@
     const storyStore = useStoryStore();
     const { selectedStory } = storeToRefs(storyStore);
     
-    const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry
+    const { isLorebookLoaded, entryIndex, categoryIndex, selectedEntry, lorebook
     } = storeToRefs(entryStore);
 
     
@@ -89,6 +89,10 @@
     function setSeverity(isGroup:boolean) {
         return isGroup ? "info" : "secondary";
     }
+
+    function viewEntry(entryId:string) {
+        selectedEntry.value = lorebook.value.Entries.find(f => f.Id == entryId);
+    }
  
 </script>
 <template>
@@ -113,6 +117,11 @@
                         <a  class="block flex-grow-1 no-underline text-color" 
                             @click="toggle(key)" href="javascript:void(0)">
                             {{ entry.DisplayName }}
+                        </a>
+                    </template>
+                    <template #icons>
+                        <a href="javascript:void(0)" @click="viewEntry(entry.Id)" class="mr-2">
+                            <i class="pi pi-expand"></i>
                         </a>
                     </template>
                     <EntryDetails :entry="entry" :read-only="true" />
