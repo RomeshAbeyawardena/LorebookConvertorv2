@@ -136,7 +136,9 @@
                     <i class="pi pi-arrow-circle-left"></i>
                 </Button>
                 <h1 class="flex align-self align-items-center flex-grow-1 m-0 ml-2 justify-content-end text-overflow-ellipsis">
+                    <span style="width:75dvw" class="text-overflow-ellipsis white-space-nowrap overflow-hidden">
                     {{ entry.DisplayName }}
+                    </span>
                 </h1>
             </div>
         </template>
