@@ -63,6 +63,7 @@
                 i.Entries.forEach(e => {
                     entryNodes.push({
                         data: e,
+                        icon: "pi pi-list",
                         key: e.Id,
                         label: e.DisplayName,
                         type: "entry",
