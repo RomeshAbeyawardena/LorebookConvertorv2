@@ -130,7 +130,7 @@
         <template v-if="props.isStandAlone" #header>
             <div class="flex flex-auto align-items-center">
                 <Button @click="closeDetailsPanel"
-                        class="flex flex-auto align-items-center flex-grow-1 p-2 border-round max-h-2rem" 
+                        class="flex flex-auto align-items-center flex-grow-1 p-2 border-round" 
                         severity="primary"
                         v-tooltip.top="'Go back'">
                     <i class="pi pi-arrow-circle-left"></i>
