@@ -6,13 +6,22 @@
     import { onMounted, ref } from "vue";
     import { IStory } from "../models/story";
     import { useSearchStore } from "../stores/searchStore";
+    import Button from "primevue/button";
+
+    import EntryTreeView from "./EntryTreeView.vue";
+    import OverlayPanel from "primevue/overlaypanel";
     
     const entryStore = useEntryStore();
     const storyStore = useStoryStore();
     const searchStore = useSearchStore();
     const stories = ref<IStory>()
     const { getOrAddStories, selectedStory } = storeToRefs(storyStore);
-    
+    const menu = ref();
+
+    function hideMenu($event:MouseEvent) {
+        menu.value.toggle($event);
+    }
+
     async function changeHandler() {
         //reset stores
         entryStore.isLorebookLoaded = false;
@@ -20,6 +29,10 @@
         searchStore.isMapped = false;
         await entryStore.getLorebook();
     }
+
+    const toggle = ($event:MouseEvent) => {
+        menu.value.toggle($event);
+    };
 
     onMounted(async() => {
         stories.value = await getOrAddStories.value;
@@ -36,14 +49,20 @@
                         placeholder="Select a story" />
         </div>
         <div class="col align-self-center justify-content-center ">
-            <h3 class="m-0 flex justify-content-end ">
-                <span class="sm:hidden md:flex align-self-center">
-                    Lorebook Viewer
-                </span>
-                <i  style="color: var(--primary-color)"
-                    v-tooltip:top="'Lorebook Viewer'"
-                    class="flex border-round border-primary border-solid pi pi-book ml-2 p-2"></i>
-            </h3>
+            
+                <h3 class="m-0 flex justify-content-end ">
+                    <span class="sm:hidden md:flex align-self-center">
+                        Lorebook Viewer
+                    </span>
+                    <Button class="flex border-round border-primary border-solid ml-2"  aria-haspopup="true" aria-controls="overlay_menu" @click="toggle">
+                    <i v-tooltip:left="'Lorebook Viewer'"
+                       class="pi pi-book"></i>
+                    </Button>
+                </h3>
+                <OverlayPanel ref="menu">
+                    <p class="ml-2" v-if="!selectedStory">No story selected</p>
+                    <EntryTreeView v-if="selectedStory" @entry-selected="hideMenu($event)" />
+                </OverlayPanel>
         </div>
     </div>
 </template>

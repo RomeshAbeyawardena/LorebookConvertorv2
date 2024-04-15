@@ -121,7 +121,7 @@
                     <template #header>
                         <a  class="flex flex-grow-1 no-underline text-color" 
                             @click="toggle(key)" href="javascript:void(0)">
-                            <div style="width:60vw" class="white-space-nowrap overflow-hidden text-overflow-ellipsis">{{ entry.DisplayName }}</div>
+                            <div class="entry-list-title white-space-nowrap overflow-hidden text-overflow-ellipsis">{{ entry.DisplayName }}</div>
                         </a>
                     </template>
                     <EntryDetails :entry="entry" :read-only="true" />

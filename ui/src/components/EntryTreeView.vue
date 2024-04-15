@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed } from 'vue';
+    import { ref, computed, watch } from 'vue';
     import Tree from 'primevue/tree';
     import { TreeNode } from 'primevue/treenode';
     import { useEntryStore } from '../stores/entryStore';
@@ -9,19 +9,36 @@
     const { selectedEntry, isLorebookLoaded } = storeToRefs(entryStore);
     const searchStore = useSearchStore();
     const { filteredCategories } = storeToRefs(searchStore);
+    const isSelf = ref(false);
+    
+    const emit = defineEmits(['entry-selected']);
     function nodeSelectHandler(node: TreeNode) {
+        isSelf.value = true;
         selectedEntry.value = node.data;
+        emit("entry-selected", selectedEntry.value);
     }
+    
+    
 
-    const selectedNodes = computed(() => {
-        if(!selectedEntry.value)
-        {
-            return [];
-        }
+    const nodes = ref<Object>({});
+    const expanded = ref<Object>({});
+    watch(selectedEntry, (newValue) => {
         
-        return [{
-            key: selectedEntry.value.CategoryId
-        }]
+        if(isSelf.value) {
+            isSelf.value = false;
+            return;
+        }
+
+        if(newValue)
+        {
+            const s = `{"${newValue.Id}": true}`;
+            nodes.value = JSON.parse(s);
+
+            const c = `{"${newValue.CategoryId}": true}`;
+            expanded.value = JSON.parse(c);
+        }
+        else 
+            nodes.value = {};
     });
 
     const loreBookNodes = computed(()=> {
@@ -63,5 +80,10 @@
             :value="loreBookNodes" 
             selection-mode="single" 
             @node-select="nodeSelectHandler"
-            :selection-keys="selectedNodes" />
+            v-model:expanded-keys="expanded"
+            v-model:selection-keys="nodes">
+        <template #default="slotprops">
+            <p class="m-0 p-0 text-overflow-ellipsis white-space-nowrap" style="width:300px">{{ slotprops.node.label }}</p>
+        </template>
+    </Tree>
 </template>

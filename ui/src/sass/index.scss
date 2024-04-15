@@ -25,8 +25,28 @@ fieldset.custom-fieldset {
     }
 }
 
+.entry-details-title {
+    width: calc(100% - 35px) !important;
+}
+
+.entry-list-title {
+    width: calc(100% - 35px) !important;
+}
+
+.menu {
+    border-top-right-radius: 0;
+}
+
 @media screen and (max-width: 412px)
 {
+    .entry-details-title {
+        width: 80dvw !important;
+    }
+
+    .entry-list-title {
+        width: 50vw !important;
+    }
+
     .xs\:hidden {
         display: none !important;
     }
