@@ -7,7 +7,7 @@
     import { IStory } from "../models/story";
     import { useSearchStore } from "../stores/searchStore";
     import Button from "primevue/button";
-    import Menu from 'primevue/menu';
+
     import EntryTreeView from "./EntryTreeView.vue";
     import OverlayPanel from "primevue/overlaypanel";
     
@@ -33,13 +33,6 @@
     const toggle = ($event:MouseEvent) => {
         menu.value.toggle($event);
     };
-
-    const items = ref([
-        {
-            label:"",
-            icon:""
-        }
-    ]);
 
     onMounted(async() => {
         stories.value = await getOrAddStories.value;
