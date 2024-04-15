@@ -76,7 +76,7 @@
     <div class="sm:hidden md:block md-col-4">
       <EntryTreeView />
     </div>
-    <div class="sm:col md:col-8">
+    <div class="sm:col flex-auto md:col-8">
       <Search v-if="isLorebookLoaded"  />
       <EntryDetails :is-stand-alone="true" 
                     :entry="selectedEntry"
