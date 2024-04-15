@@ -8,6 +8,10 @@
     import AddComment from "./AddComment.vue";
     import { DateService } from "../services/DateService";
     import { IComment } from "../models/comment";
+    import { useLoaderStore } from "../stores/loaderStore";
+
+    const loaderStore = useLoaderStore();
+    const { isLoading } = storeToRefs(loaderStore);
 
     const dateService = new DateService();
     
@@ -35,7 +39,9 @@
     onBeforeMount(async() => {
         if(storyStore.selectedStory)
         {
+            isLoading.value = true;
             await commentStore.getComments(storyStore.selectedStory.id);
+            isLoading.value = false;
         }
     });
 

@@ -11,8 +11,10 @@
     import { useCommentStore } from "./stores/commentStore";
     import { useNotificationStore } from "./stores/notificationStore";
     import { useEntryGroupingStore } from "./stores/EntryGroupingStore";
+    import { useLoaderStore } from "./stores/loaderStore";
     import EntryTreeView from "./components/EntryTreeView.vue";
-    
+    import ProgressSpinner from 'primevue/progressspinner';
+
     const storyStore = useStoryStore();
     const entryStore = useEntryStore();
     const commentStore = useCommentStore();
@@ -20,7 +22,8 @@
     const notificationStore = useNotificationStore();
     const entryGroupingStore = useEntryGroupingStore();
     const { hasPendingChanges } = storeToRefs(entryGroupingStore);
-    
+    const loaderStore = useLoaderStore();
+    const { isLoading } = storeToRefs(loaderStore);
     async function saveGroups() {
         if(hasPendingChanges.value)
         {
@@ -52,8 +55,10 @@
     }
     
     async function saveAll() {
+      isLoading.value = true;
       await saveComments();
       await saveGroups();
+      isLoading.value = false;
     }
     const intervalId = setInterval(async() => {
       await saveAll();
@@ -66,11 +71,16 @@
 
     const { selectedEntry, isLorebookLoaded } = storeToRefs(entryStore);
     onBeforeMount(async() => {
+      isLoading.value = true;
       await storyStore.getStories();
+      isLoading.value = false;
     });
 </script>
 <template>
   <Toast />
+  <Teleport to="body">
+    <ProgressSpinner animation-duration="5s" aria-label="Loading" v-if="isLoading" />
+  </Teleport>
   <div class="grid">
     <StorySelector />
     <div class="sm:hidden md:block md-col-4">
