@@ -3,11 +3,26 @@ using Lorebook.Convertor.Domain;
 using System.Text.Json;
 
 var path = args.FirstOrDefault();
+
+static void DisplayUsage(TextWriter writer, bool displayDescription)
+{
+    if (displayDescription)
+    {
+        writer.WriteLine("Converts a Lorebook (*.lorebook) file to a JSON output supported by the journal viewer UI app");
+    }
+    writer.WriteLine("\tUsage: Lorebook.Convertor.exe [path]");
+}
+
 try
 {
     if (string.IsNullOrWhiteSpace(path))
     {
-        throw new NullReferenceException();
+        throw new NullReferenceException("A path argument is required");
+    }
+
+    if(!path.EndsWith(".lorebook", StringComparison.InvariantCultureIgnoreCase))
+    {
+        throw new NotSupportedException("The file is not a valid lorebook file");
     }
 
     if (!File.Exists(path))
@@ -26,5 +41,9 @@ try
 }
 catch(Exception exception)
 {
-    Console.Error.WriteLine(exception);
+    var defaultColour = Console.ForegroundColor;
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.Error.WriteLine("An error occurred: {0}", exception.Message);
+    DisplayUsage(Console.Error, true);
+    Console.ForegroundColor = defaultColour;
 }
