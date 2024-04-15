@@ -15,6 +15,7 @@
     function nodeSelectHandler(node: TreeNode) {
         isSelf.value = true;
         selectedEntry.value = node.data;
+        console.log(node.data);
         emit("entry-selected", selectedEntry.value);
     }
     
@@ -33,9 +34,11 @@
         {
             const s = `{"${newValue.Id}": true}`;
             nodes.value = JSON.parse(s);
-
-            const c = `{"${newValue.CategoryId}": true}`;
-            expanded.value = JSON.parse(c);
+            if(newValue.CategoryId)
+            {
+                const c = `{"${newValue.CategoryId}": true}`;
+                expanded.value = JSON.parse(c);
+            }
         }
         else 
             nodes.value = {};
@@ -60,6 +63,7 @@
                 i.Entries.forEach(e => {
                     entryNodes.push({
                         data: e,
+                        icon: "pi pi-list",
                         key: e.Id,
                         label: e.DisplayName,
                         type: "entry",
