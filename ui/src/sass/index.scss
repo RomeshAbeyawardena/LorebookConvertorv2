@@ -25,8 +25,16 @@ fieldset.custom-fieldset {
     }
 }
 
+.entry-details-title {
+    width: calc(100% - 35px) !important;
+}
+
 @media screen and (max-width: 412px)
 {
+    .entry-details-title {
+        width: 80dvw !important;
+    }
+
     .xs\:hidden {
         display: none !important;
     }
