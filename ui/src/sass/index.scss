@@ -33,6 +33,10 @@ fieldset.custom-fieldset {
     width: calc(100% - 35px) !important;
 }
 
+.menu {
+    border-top-right-radius: 0;
+}
+
 @media screen and (max-width: 412px)
 {
     .entry-details-title {
