@@ -130,14 +130,16 @@
         <template v-if="props.isStandAlone" #header>
             <div class="flex flex-auto align-items-center">
                 <Button @click="closeDetailsPanel"
-                        class="flex flex-auto align-items-center flex-grow-1 p-2 border-round" 
+                        class="flex p-2 border-round" 
                         severity="primary"
                         v-tooltip.top="'Go back'">
                     <i class="pi pi-arrow-circle-left"></i>
                 </Button>
-                <h3 class="flex align-self align-items-center flex-grow-1 m-0 ml-2 justify-content-end text-overflow-ellipsis">
-                    {{ entry.DisplayName }}
-                </h3>
+                <h1 v-tooltip:right="entry.DisplayName" class="flex align-self align-items-center flex-grow-1 m-0 ml-2 justify-content-end text-right">
+                    <a href="javascript:void(0)" style="width:80dvw" class="no-underline text-color text-overflow-ellipsis white-space-nowrap overflow-hidden">
+                        {{ entry.DisplayName }}
+                    </a>
+                </h1>
             </div>
         </template>
         <template #content>

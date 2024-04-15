@@ -93,6 +93,7 @@
     function viewEntry(entryId:string) {
         selectedEntry.value = lorebook.value.Entries.find(f => f.Id == entryId);
     }
+ 
 </script>
 <template>
     <Accordion  class="mt-2" v-if="isLorebookLoaded" 

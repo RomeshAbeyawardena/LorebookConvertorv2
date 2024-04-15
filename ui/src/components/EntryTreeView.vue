@@ -3,22 +3,37 @@
     import Tree from 'primevue/tree';
     import { TreeNode } from 'primevue/treenode';
     import { useEntryStore } from '../stores/entryStore';
+    import { useSearchStore } from '../stores/searchStore';
     import { storeToRefs } from 'pinia';
     const entryStore = useEntryStore();
-    const { selectedEntry, isLorebookLoaded, lorebook } = storeToRefs(entryStore);
+    const { selectedEntry, isLorebookLoaded } = storeToRefs(entryStore);
+    const searchStore = useSearchStore();
+    const { filteredCategories } = storeToRefs(searchStore);
     function nodeSelectHandler(node: TreeNode) {
         selectedEntry.value = node.data;
     }
+
+    const selectedNodes = computed(() => {
+        if(!selectedEntry.value)
+        {
+            return [];
+        }
+        
+        return [{
+            key: selectedEntry.value.CategoryId
+        }]
+    });
+
     const loreBookNodes = computed(()=> {
         let treeNodes:Array<TreeNode> = [];
         if(isLorebookLoaded) {
             treeNodes = [];
-            lorebook.value.Groupings.forEach(i => {
+            filteredCategories.value.forEach(i => {
                 const categoryEntry:TreeNode = {
                     data: i,
                     icon: "pi pi-folder",
                     key: i.CategoryId,
-                    label: i.Category.Name,
+                    label: i.Category.Name, 
                     type:"category",
                     selectable: false
                 }
@@ -35,7 +50,6 @@
                     });
                 });
 
-                
                 categoryEntry.children = entryNodes;
                 categoryEntry.leaf = entryNodes.length > 0;
                 treeNodes.push(categoryEntry);
@@ -45,5 +59,9 @@
     });
 </script>
 <template>
-    <Tree class="w-full" :value="loreBookNodes" selection-mode="single" @node-select="nodeSelectHandler" />
+    <Tree   class="w-full" 
+            :value="loreBookNodes" 
+            selection-mode="single" 
+            @node-select="nodeSelectHandler"
+            :selection-keys="selectedNodes" />
 </template>
