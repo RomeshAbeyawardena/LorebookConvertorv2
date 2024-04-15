@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\..\..\Users\romes\Downloads\Battle of Orleans (Sat Mar 30 2024).lorebook = ..\..\..\Users\romes\Downloads\Battle of Orleans (Sat Mar 30 2024).lorebook
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorebook.Convertor.Web", "Lorebook.Convertor.Web\Lorebook.Convertor.Web.csproj", "{E9912DED-037C-4DBE-877C-D58548C80C7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{61C8FBDB-2DD8-420B-9F08-7CE0DE81845D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61C8FBDB-2DD8-420B-9F08-7CE0DE81845D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61C8FBDB-2DD8-420B-9F08-7CE0DE81845D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9912DED-037C-4DBE-877C-D58548C80C7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9912DED-037C-4DBE-877C-D58548C80C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9912DED-037C-4DBE-877C-D58548C80C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9912DED-037C-4DBE-877C-D58548C80C7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
