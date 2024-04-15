@@ -9,12 +9,19 @@
     import Button from "primevue/button";
     import Menu from 'primevue/menu';
     import EntryTreeView from "./EntryTreeView.vue";
+    import OverlayPanel from "primevue/overlaypanel";
+    
     const entryStore = useEntryStore();
     const storyStore = useStoryStore();
     const searchStore = useSearchStore();
     const stories = ref<IStory>()
     const { getOrAddStories, selectedStory } = storeToRefs(storyStore);
     const menu = ref();
+
+    function hideMenu($event:MouseEvent) {
+        menu.value.toggle($event);
+    }
+
     async function changeHandler() {
         //reset stores
         entryStore.isLorebookLoaded = false;
@@ -23,9 +30,16 @@
         await entryStore.getLorebook();
     }
 
-    const toggle = (event:MouseEvent) => {
-        menu.value.toggle(event);
+    const toggle = ($event:MouseEvent) => {
+        menu.value.toggle($event);
     };
+
+    const items = ref([
+        {
+            label:"",
+            icon:""
+        }
+    ]);
 
     onMounted(async() => {
         stories.value = await getOrAddStories.value;
@@ -48,18 +62,14 @@
                         Lorebook Viewer
                     </span>
                     <Button class="flex border-round border-primary border-solid ml-2"  aria-haspopup="true" aria-controls="overlay_menu" @click="toggle">
-                    <i
-                        v-tooltip:left="'Lorebook Viewer'"
-                        class="pi pi-book"></i>
+                    <i v-tooltip:left="'Lorebook Viewer'"
+                       class="pi pi-book"></i>
                     </Button>
                 </h3>
-                <Menu ref="menu" :popup="true" class="menu">
-                    <template #start>
-                        <EntryTreeView>
-
-                        </EntryTreeView>
-                    </template>
-                </Menu>
+                <OverlayPanel ref="menu">
+                    <p class="ml-2" v-if="!selectedStory">No story selected</p>
+                    <EntryTreeView v-if="selectedStory" @entry-selected="hideMenu($event)" />
+                </OverlayPanel>
         </div>
     </div>
 </template>

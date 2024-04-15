@@ -10,10 +10,15 @@
     const searchStore = useSearchStore();
     const { filteredCategories } = storeToRefs(searchStore);
     const isSelf = ref(false);
+    
+    const emit = defineEmits(['entry-selected']);
     function nodeSelectHandler(node: TreeNode) {
         isSelf.value = true;
         selectedEntry.value = node.data;
+        emit("entry-selected", selectedEntry.value);
     }
+    
+    
 
     const nodes = ref<Object>({});
     const expanded = ref<Object>({});
