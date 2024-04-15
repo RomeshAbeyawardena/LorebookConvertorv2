@@ -16,5 +16,9 @@ if(!File.Exists(path))
 
 var lorebook = DeserialisedLorebook.ParseJson(path);
 
+var fileNameWithExt = Path.GetFileName(path);
 var fileName = Path.GetFileNameWithoutExtension(path);
-File.WriteAllText($"{fileName}.json", JsonSerializer.Serialize(lorebook));
+var basePath = path.Replace(fileNameWithExt, string.Empty);
+Console.WriteLine(basePath);
+File.WriteAllText($"{Path.Combine(basePath, fileName)}.json", 
+    JsonSerializer.Serialize(lorebook));
