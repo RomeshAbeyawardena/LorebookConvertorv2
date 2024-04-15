@@ -8,6 +8,8 @@ import { useEntryGroupingStore } from "./EntryGroupingStore";
 import { useStoryStore } from "./storyStore";
 import { IEntry } from "../models/entry";
 import { orderBy } from "lodash";
+import { v4 } from "uuid";
+
 export interface ISearchStore {
     filteredCategories:ComputedRef<Array<ILorebookGroup>>;
     getOrAddSearchIndex:ComputedRef<Array<ISearchIndex>>;
@@ -88,13 +90,14 @@ export const useSearchStore = defineStore("search-store", (): ISearchStore => {
                     allGroups.push(... entryStore.lorebook.Groupings)
 
                     for(let group of groups) {
+                        const id = v4()
                         allGroups.push({
                             Category: {
-                                Id: "",
+                                Id: id,
                                 Name:group.name,
                             },
                             groupId: group.groupId,
-                            CategoryId: "",
+                            CategoryId: id,
                             Entries: group.entryIds.map(e => entryStore.lorebook.Entries.find(le => le.Id == e) as IEntry)
                         });
                     }
