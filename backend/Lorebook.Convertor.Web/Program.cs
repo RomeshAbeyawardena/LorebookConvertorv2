@@ -1,6 +1,7 @@
+using Lorebook.Convertor.Web.Api.Lorebook;
+
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
-
+app.AddLorebookEndpoints();
 app.Run();

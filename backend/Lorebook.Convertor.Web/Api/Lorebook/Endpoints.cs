@@ -1,5 +1,11 @@
-﻿namespace Lorebook.Convertor.Web.Api.Lorebook;
+﻿using Lorebook.Convertor.Web.Api.Lorebook.Post.Convert;
 
-public class Endpoints
+namespace Lorebook.Convertor.Web.Api.Lorebook;
+
+public static class Endpoints
 {
+    public static IEndpointRouteBuilder AddLorebookEndpoints(this IEndpointRouteBuilder builder)
+    {
+        return builder.AddConversionEndpoint();
+    }
 }
