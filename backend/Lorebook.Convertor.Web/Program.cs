@@ -1,16 +1,17 @@
 using Lorebook.Convertor.Web.Api.AntiforgeryToken;
 using Lorebook.Convertor.Web.Api.AntiforgeryToken.Extensions;
-using Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Lorebook;
+using Lorebook.Convertor.Web.Api.Session;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddApiServices()
-    .AddAntiForgeryTokenServices();
+    .AddAntiForgeryTokenServices();;
 var app = builder.Build();
 
 app
     .AddAntiForgeryTokenEndpoints()
-    .AddLorebookEndpoints();
+    .AddLorebookEndpoints()
+    .AddSessionEndpoints();
 app.Run();

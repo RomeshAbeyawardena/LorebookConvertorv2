@@ -5,7 +5,7 @@ namespace Lorebook.Convertor.Web.Api.Session.Post.SetSession
 {
     public static class Endpoint
     {
-        private static async Task<IActionResult> SetSession(IMediator mediator, Guid? sessionId, CancellationToken cancellationToken)
+        private static async Task<IActionResult> SetSession(IMediator mediator, [FromHeader(Name = "Session-Key")] Guid? sessionId, CancellationToken cancellationToken)
         {
             return new OkObjectResult(await mediator.Send(new Command { SessionId = sessionId }, cancellationToken));
         }

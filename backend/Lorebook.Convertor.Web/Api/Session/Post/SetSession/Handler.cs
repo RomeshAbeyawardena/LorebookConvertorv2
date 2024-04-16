@@ -34,7 +34,7 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache,
         sessionData.Expires = utcNow.AddMinutes(applicationSettings.SessionValidityPeriodInMinutes);
         sessionData.Created = utcNow;
 
-        await CommitSessionData(sessionData, cancellationToken);
+        await distributedCache.CommitSessionData(sessionData, cancellationToken);
         return sessionData;
     }
 }

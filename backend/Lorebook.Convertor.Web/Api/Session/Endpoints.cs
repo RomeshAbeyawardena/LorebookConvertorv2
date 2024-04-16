@@ -1,20 +1,12 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Lorebook.Convertor.Web.Api.Session.Post.SetSession;
 
 namespace Lorebook.Convertor.Web.Api.Session;
 
 public static class Endpoints
 {
-    private static async Task<IActionResult> SetSession(IMediator mediator, CancellationToken cancellationToken)
+    public static IEndpointRouteBuilder AddSessionEndpoints(this IEndpointRouteBuilder builder)
     {
-       
-    }
-
-    public static IEndpointRouteBuilder AddSession(this IEndpointRouteBuilder builder)
-    {
-        builder.MapPost("api/session", SetSession);
-
+        builder.AddSetSessionEndpoint();
         return builder;
     }
 }
