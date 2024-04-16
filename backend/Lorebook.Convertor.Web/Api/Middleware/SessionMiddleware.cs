@@ -37,7 +37,7 @@ public static class SessionMiddleware
                             ValidAudiences = applicationSettings.Audiences,
                             ValidIssuers = applicationSettings.Issuers,
                             RequireExpirationTime = true,
-                            TokenDecryptionKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.EncryptionKey))
+                            TokenDecryptionKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.EncryptionKey)),
                         });
 
                     if (tokenValidationResult.IsValid)
