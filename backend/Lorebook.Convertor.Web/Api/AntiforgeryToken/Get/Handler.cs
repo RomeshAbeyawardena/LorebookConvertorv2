@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Post;
+namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 
 public class Handler(IMediator mediator, IDistributedCache distributedCache, IAntiforgery antiforgery, IHttpContextAccessor httpContext) : IRequestHandler<Command, SessionData>
 {
