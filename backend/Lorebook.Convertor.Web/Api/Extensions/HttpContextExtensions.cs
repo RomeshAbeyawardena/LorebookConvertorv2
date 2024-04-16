@@ -1,4 +1,6 @@
-﻿namespace Lorebook.Convertor.Web.Api.Extensions;
+﻿using Lorebook.Convertor.Web.Api.Session;
+
+namespace Lorebook.Convertor.Web.Api.Extensions;
 
 public static class HttpContextExtensions
 {
@@ -6,5 +8,10 @@ public static class HttpContextExtensions
     {
         return context.Items.TryGetValue("AntiForgeryTokenValidated", out var isAntiforgerytokenValidated)
             && ((bool?)isAntiforgerytokenValidated).GetValueOrDefault();
+    }
+
+    public static SessionData? GetSessionData(this HttpContext context)
+    {
+        return context.Features.Get<SessionData>();
     }
 }
