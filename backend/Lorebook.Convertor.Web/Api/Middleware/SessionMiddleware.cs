@@ -8,7 +8,7 @@ namespace Lorebook.Convertor.Web.Api.Middleware;
 
 public static class SessionMiddleware
 {
-    private static async Task Fail(HttpResponse response, string? reason, int statusCode = 401)
+    public static async Task Fail(HttpResponse response, string? reason, int statusCode = 401)
     {
         response.StatusCode = statusCode;
         await response.WriteAsJsonAsync(Result.Error<string>($"Authorisation failed: {reason}", statusCode));
