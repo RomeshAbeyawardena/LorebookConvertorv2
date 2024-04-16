@@ -30,11 +30,14 @@ public static class SessionMiddleware
                     var tokenValidationResult = await jsonWebTokenHandler
                         .ValidateTokenAsync(key, new TokenValidationParameters
                         {
+                            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.TokenKey)),
+                            RequireSignedTokens = true,
                             ValidateIssuer = true,
                             ValidateAudience = true,
                             ValidAudiences = applicationSettings.Audiences,
                             ValidIssuers = applicationSettings.Issuers,
                             RequireExpirationTime = true,
+                            TokenDecryptionKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.TokenKey))
                         });
 
                     if (tokenValidationResult.IsValid)

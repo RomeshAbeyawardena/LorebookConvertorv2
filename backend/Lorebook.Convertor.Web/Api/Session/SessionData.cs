@@ -8,4 +8,5 @@ public class SessionData
     public DateTimeOffset Created { get; set; }
     public DateTimeOffset? Modified { get; set; }
     public DateTimeOffset? Expires { get; set; }
+    public string? WebToken { get; set; }
 }

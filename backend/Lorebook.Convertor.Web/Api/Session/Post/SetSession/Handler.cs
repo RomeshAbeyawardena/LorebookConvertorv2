@@ -3,6 +3,10 @@ using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session.Get;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace Lorebook.Convertor.Web.Api.Session.Post.SetSession;
 
@@ -33,6 +37,18 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache,
         sessionData.SessionId = Guid.NewGuid();
         sessionData.Expires = utcNow.AddMinutes(applicationSettings.SessionValidityPeriodInMinutes);
         sessionData.Created = utcNow;
+        
+        var key = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.TokenKey));
+       
+        sessionData.WebToken = new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor {
+            Audience = applicationSettings.Audiences.FirstOrDefault(),
+            Issuer = applicationSettings.Issuers.FirstOrDefault(),
+
+            IssuedAt = utcNow.DateTime,
+            Expires = sessionData.Expires.Value.DateTime,
+            Subject = new ClaimsIdentity(new List<Claim> { new("Session-Id", sessionData.SessionId.ToString()) }),
+            SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512)
+        });
 
         await distributedCache.CommitSessionData(sessionData, cancellationToken);
         return sessionData;

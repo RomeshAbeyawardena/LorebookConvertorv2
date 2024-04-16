@@ -3,7 +3,7 @@
 public static partial class Middleware
 {
     
-    public static WebApplication UseMiddleware(this WebApplication builder)
+    public static WebApplication UseOwnMiddleware(this WebApplication builder)
     {
         builder
             .Use(SessionMiddleware.SessionHandler)

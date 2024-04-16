@@ -21,7 +21,7 @@ public static class Endpoint
         return new OkObjectResult(await mediator.Send(new Command { 
             File = file, 
             Version = version 
-        }));
+        }, cancellationToken));
     }
 
     public const string EndpointUrl = "api/convert";
