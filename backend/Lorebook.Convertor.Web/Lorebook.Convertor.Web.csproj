@@ -8,6 +8,7 @@
     <ItemGroup>
         <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="MessagePack" Version="2.5.140" />
+        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.5.1" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Lorebook.Convertor.Domain\Lorebook.Convertor.Domain.csproj" />

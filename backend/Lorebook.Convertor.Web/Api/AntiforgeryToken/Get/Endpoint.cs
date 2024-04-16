@@ -1,13 +1,16 @@
-﻿using MediatR;
+﻿using Lorebook.Convertor.Web.Api.Session;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 
 public static class Endpoint
 {
-    private static async Task<IActionResult> GetAntiforgeryToken(IMediator mediator, [FromHeader(Name = "Session-Key")] Guid sessionId, CancellationToken cancellationToken)
+    private static async Task<IActionResult> GetAntiforgeryToken(IHttpContextAccessor httpContextAccessor, IMediator mediator, CancellationToken cancellationToken)
     {
-        var session = await mediator.Send(new Command { SessionId = sessionId }, cancellationToken);
+        var context = httpContextAccessor.HttpContext ?? throw new NotSupportedException();
+        var sessionData = context.Features.Get<SessionData>() ?? throw new UnauthorizedAccessException("Unauthorised request");
+        var session = await mediator.Send(new Command { SessionId = sessionData.SessionId }, cancellationToken);
         return new OkObjectResult(session);
     }
 
