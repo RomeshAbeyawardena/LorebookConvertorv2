@@ -7,11 +7,12 @@ using Lorebook.Convertor.Web.Api.Session;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddApiServices()
-    .AddAntiForgeryTokenServices();;
+    .AddAntiForgeryTokenServices();
 var app = builder.Build();
 
 app
     .AddAntiForgeryTokenEndpoints()
     .AddLorebookEndpoints()
     .AddSessionEndpoints();
+app.UseAntiforgery();
 app.Run();
