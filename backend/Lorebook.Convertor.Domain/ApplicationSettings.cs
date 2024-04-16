@@ -13,4 +13,5 @@ public record ApplicationSettings
     public IEnumerable<string> Audiences { get; set; }
     public IEnumerable<string> Issuers { get; set; }
     public string TokenKey { get; set; }
+    public string EncryptionKey { get; set; }
 }
