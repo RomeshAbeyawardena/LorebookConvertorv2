@@ -8,9 +8,9 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 
 public class Handler(IMediator mediator, IDistributedCache distributedCache, 
-    IAntiforgery antiforgery, IHttpContextAccessor httpContext, TimeProvider timeProvider) : IRequestHandler<Command, SessionData>
+    IAntiforgery antiforgery, IHttpContextAccessor httpContext, TimeProvider timeProvider) : IRequestHandler<Command, AntiforgeryTokenSessionData>
 {
-    public async Task<SessionData> Handle(Command request, CancellationToken cancellationToken)
+    public async Task<AntiforgeryTokenSessionData> Handle(Command request, CancellationToken cancellationToken)
     {
         var session = await mediator.Send(new Query { SessionId = request.SessionId }, cancellationToken) 
             ?? throw new NullReferenceException("Session not found");
@@ -28,6 +28,9 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache,
         session.Modified = utcNow;
         await distributedCache.CommitSessionData(session, cancellationToken);
 
-        return session;
+        var token = AntiforgeryTokenSessionData.From(session);
+        token.CookieName = tokens.CookieToken;
+        token.HeaderName = token.HeaderName;
+        return token;
     }
 }

@@ -1,10 +1,8 @@
-﻿using Lorebook.Convertor.Web.Api.Session;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
 
 namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 
-public record Command : IRequest<SessionData>
+public record Command : IRequest<AntiforgeryTokenSessionData>
 {
     public Guid? SessionId { get; set; }
 }

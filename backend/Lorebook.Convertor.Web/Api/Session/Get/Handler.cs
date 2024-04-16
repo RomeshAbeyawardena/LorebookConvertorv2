@@ -16,7 +16,8 @@ public class Handler(IDistributedCache distributedCache) : IRequestHandler<Query
         if (sessionRawData != null)
         {
             using var memoryStream = new MemoryStream(sessionRawData);
-            await MessagePackSerializer.SerializeAsync(memoryStream, sessionData, cancellationToken: cancellationToken);
+            memoryStream.Position = 0;
+            sessionData = await MessagePackSerializer.DeserializeAsync<SessionData>(memoryStream, cancellationToken: cancellationToken);
         }
 
         return sessionData;
