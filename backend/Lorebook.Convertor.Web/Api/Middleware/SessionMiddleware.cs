@@ -26,7 +26,8 @@ public static class SessionMiddleware
                 if (!string.IsNullOrWhiteSpace(key))
                 {
                     var jsonWebTokenHandler = new JsonWebTokenHandler();
-                    var applicationSettings = context.RequestServices.GetRequiredService<ApplicationSettings>();
+                    var applicationSettings = context.RequestServices
+                        .GetRequiredService<ApplicationSettings>();
 
                     var tokenValidationResult = await jsonWebTokenHandler
                         .ValidateTokenAsync(key, new TokenValidationParameters
