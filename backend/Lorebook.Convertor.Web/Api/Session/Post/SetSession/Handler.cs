@@ -1,13 +1,15 @@
 ﻿using Lorebook.Convertor.Domain;
+using Lorebook.Convertor.Web.Api.Session.Post.GetSession;
 using MediatR;
 using MessagePack;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace Lorebook.Convertor.Web.Api.Session.Post.SetSession;
 
-public class Handler(IDistributedCache distributedCache, ApplicationSettings applicationSettings, TimeProvider timeProvider) : IRequestHandler<Command, SessionData>
+public class Handler(IMediator mediator, IDistributedCache distributedCache, 
+    ApplicationSettings applicationSettings, TimeProvider timeProvider) : IRequestHandler<Command, SessionData>
 {
-    private async Task CommitSessionData(SessionData sessionData, CancellationToken cancellationToken)
+    internal async Task CommitSessionData(SessionData sessionData, CancellationToken cancellationToken)
     {
         var serialisedSessionData = MessagePackSerializer.Serialize(sessionData, cancellationToken: cancellationToken);
         await distributedCache.SetAsync($"session:{sessionData.SessionId:x}", serialisedSessionData, cancellationToken);
@@ -19,12 +21,8 @@ public class Handler(IDistributedCache distributedCache, ApplicationSettings app
         DateTimeOffset utcNow;
         if (request.SessionId.HasValue)
         {
-            var sessionRawData = await distributedCache.GetAsync($"session:{request.SessionId:x}", cancellationToken);
-            if (sessionRawData != null)
-            {
-                using var memoryStream = new MemoryStream(sessionRawData);
-                await MessagePackSerializer.SerializeAsync(memoryStream, sessionData, cancellationToken: cancellationToken);
-            }
+            sessionData = await mediator.Send(new Query { SessionId = request.SessionId.Value }, cancellationToken) 
+                ?? throw new NullReferenceException("Session not found");
 
             utcNow = timeProvider.GetUtcNow();
             if (sessionData.Expires < utcNow)
