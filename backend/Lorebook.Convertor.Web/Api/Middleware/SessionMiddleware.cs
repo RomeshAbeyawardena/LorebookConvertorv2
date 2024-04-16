@@ -46,7 +46,13 @@ public static class SessionMiddleware
                         {
                             var mediator = context.RequestServices.GetRequiredService<IMediator>();
                             var timeProvider = context.RequestServices.GetRequiredService<TimeProvider>();
-                            var session = await mediator.Send(new Query { SessionId = (Guid)sessionId });
+
+                            if(!Guid.TryParse(sessionId?.ToString(), out var id))
+                            {
+                                throw new InvalidCastException("Invalid claims");
+                            }
+
+                            var session = await mediator.Send(new Query { SessionId = id });
                             if (session == null || session.Expires < timeProvider.GetUtcNow())
                             {
                                 throw new UnauthorizedAccessException("Session expired or invalid");
