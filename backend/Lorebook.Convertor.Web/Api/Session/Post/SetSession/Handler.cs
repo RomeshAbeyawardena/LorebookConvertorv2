@@ -40,13 +40,15 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache,
 
         var key = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.TokenKey));
         var encryptionKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.EncryptionKey));
+
+        var localNow = timeProvider.GetLocalNow();
         sessionData.WebToken = new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
         {
             Audience = applicationSettings.Audiences.FirstOrDefault(),
             Issuer = applicationSettings.Issuers.FirstOrDefault(),
-
-            IssuedAt = utcNow.DateTime,
-            Expires = sessionData.Expires.Value.DateTime,
+            IssuedAt = localNow.DateTime,
+            NotBefore = localNow.DateTime,
+            Expires = localNow.DateTime,
             Subject = new ClaimsIdentity(new List<Claim> { new("Session-Id", sessionData.SessionId.ToString()) }),
             SigningCredentials = new SigningCredentials(key, 
                 SecurityAlgorithms.HmacSha512),
