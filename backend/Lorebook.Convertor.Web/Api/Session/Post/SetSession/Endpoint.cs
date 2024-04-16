@@ -13,7 +13,7 @@ namespace Lorebook.Convertor.Web.Api.Session.Post.SetSession
 
         public static IEndpointRouteBuilder AddSetSessionEndpoint(this IEndpointRouteBuilder builder)
         {
-            builder.MapPost("api/session", SetSession);
+            builder.MapPost(V1.ApiUrl, SetSession);
 
             return builder;
         }

@@ -1,4 +1,5 @@
-﻿using Lorebook.Convertor.Web.Api.Session.Get;
+﻿using Lorebook.Convertor.Web.Api.Extensions;
+using Lorebook.Convertor.Web.Api.Session.Get;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ public static class Endpoint
     {
         var context = httpContext.HttpContext ?? throw new NotSupportedException();
 
-        if ( !(context.Items.TryGetValue("AntiforgerytokenValidated", out var isAntiforgerytokenValidated) && ((bool?)isAntiforgerytokenValidated).GetValueOrDefault()))
+        if (!context.IsAntiForgeryTokenValidated())
         {
             throw new UnauthorizedAccessException("Antiforgery token not validated");
         }
