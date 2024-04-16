@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Lorebook.Convertor.Web.Api.Session.Post.GetSession;
+namespace Lorebook.Convertor.Web.Api.Session.Get;
 
 public record Query : IRequest<SessionData?>
 {

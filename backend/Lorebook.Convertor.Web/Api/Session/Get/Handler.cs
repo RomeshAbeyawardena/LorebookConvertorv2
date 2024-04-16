@@ -2,7 +2,7 @@
 using MessagePack;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace Lorebook.Convertor.Web.Api.Session.Post.GetSession;
+namespace Lorebook.Convertor.Web.Api.Session.Get;
 
 public class Handler(IDistributedCache distributedCache) : IRequestHandler<Query, SessionData?>
 {
