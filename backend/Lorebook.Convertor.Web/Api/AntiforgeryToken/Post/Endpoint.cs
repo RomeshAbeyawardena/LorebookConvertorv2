@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 
 public static class Endpoint
 {
     private static async Task<IActionResult> GetAntiforgeryToken(IHttpContextAccessor httpContext,
-        IAntiforgery antiforgery, IMemoryCache memoryCache)
+        IAntiforgery antiforgery, IDistributedCache memoryCache)
     {
         await Task.CompletedTask;
         var context = httpContext.HttpContext ?? throw new NullReferenceException();
