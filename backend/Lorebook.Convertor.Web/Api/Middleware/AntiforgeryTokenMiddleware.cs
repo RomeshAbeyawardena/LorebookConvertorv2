@@ -1,4 +1,5 @@
-﻿using Lorebook.Convertor.Web.Api.Session;
+﻿using Lorebook.Convertor.Web.Api.Extensions;
+using Lorebook.Convertor.Web.Api.Session;
 
 namespace Lorebook.Convertor.Web.Api.Middleware
 {
@@ -13,9 +14,9 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                     var token = antiForgeryValue.FirstOrDefault();
                     var session = context.Features.Get<SessionData>();
                     var timeProvider = context.RequestServices.GetRequiredService<TimeProvider>();
-                    if (!string.IsNullOrWhiteSpace(token) && session != null && session.Expires > timeProvider.GetUtcNow())
+                    if (!string.IsNullOrWhiteSpace(token) && session.IsValid(timeProvider))
                     {
-                        if(string.IsNullOrWhiteSpace(session.AntiforgeryToken))
+                        if(string.IsNullOrWhiteSpace(session!.AntiforgeryToken))
                         {
                             throw new NullReferenceException("Antiforgery token not set");
                         }

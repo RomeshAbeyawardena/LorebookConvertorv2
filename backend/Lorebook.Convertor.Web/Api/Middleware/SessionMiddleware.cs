@@ -1,4 +1,5 @@
 ﻿using Lorebook.Convertor.Domain;
+using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session.Get;
 using MediatR;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -53,7 +54,7 @@ public static class SessionMiddleware
                             }
 
                             var session = await mediator.Send(new Query { SessionId = id });
-                            if (session == null || session.Expires < timeProvider.GetUtcNow())
+                            if (!session.IsValid(timeProvider))
                             {
                                 throw new UnauthorizedAccessException("Session expired or invalid");
                             }

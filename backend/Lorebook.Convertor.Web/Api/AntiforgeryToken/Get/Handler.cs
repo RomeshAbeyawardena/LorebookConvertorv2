@@ -15,16 +15,14 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache,
         var session = await mediator.Send(new Query { SessionId = request.SessionId }, cancellationToken) 
             ?? throw new NullReferenceException("Session not found");
 
-        var utcNow = timeProvider.GetUtcNow();
-        
-        if(session.Expires < utcNow)
+        if(!session.IsValid(timeProvider))
         {
             throw new UnauthorizedAccessException("Session expired");
         }
 
         var tokens = antiforgery.GetTokens(httpContext.HttpContext ?? throw new InvalidOperationException());
         session.AntiforgeryToken = tokens.RequestToken;
-        utcNow = timeProvider.GetUtcNow();
+        var utcNow = timeProvider.GetUtcNow();
         session.Modified = utcNow;
         await distributedCache.CommitSessionData(session, cancellationToken);
 

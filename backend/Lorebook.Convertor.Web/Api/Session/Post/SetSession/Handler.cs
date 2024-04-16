@@ -23,7 +23,7 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache,
                 ?? throw new NullReferenceException("Session not found");
 
             utcNow = timeProvider.GetUtcNow();
-            if (sessionData.Expires < utcNow)
+            if (!sessionData.IsValid(timeProvider))
             {
                 sessionData.Modified = utcNow;
                 sessionData.Expires = utcNow.AddMinutes(applicationSettings.SessionValidityPeriodInMinutes);
