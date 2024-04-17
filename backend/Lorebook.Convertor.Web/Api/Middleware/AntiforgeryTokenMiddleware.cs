@@ -34,8 +34,8 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                 context.Items.Add("AntiforgerytokenValidated", true);
                 await requestDelegate(context);
             }
-            catch (System.Exception ex ) when (ex is UnauthorizedAccessException 
-                || ex is NullReferenceException 
+            catch (System.Exception ex ) when (ex is InvalidOrExpiredAntiForgeryException
+                || ex is EntityNotFoundException
                 || ex is InvalidOperationException)
             {
                 await SessionMiddleware.Fail(timeProvider, context.Response, ex.Message, 401);
