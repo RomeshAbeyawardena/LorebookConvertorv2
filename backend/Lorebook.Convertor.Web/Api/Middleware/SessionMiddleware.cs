@@ -1,4 +1,5 @@
 ﻿using Lorebook.Convertor.Domain;
+using Lorebook.Convertor.Domain.Exceptions;
 using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session.Get;
 using MediatR;
@@ -28,18 +29,21 @@ public static class SessionMiddleware
                     var jsonWebTokenHandler = new JsonWebTokenHandler();
                     var applicationSettings = context.RequestServices
                         .GetRequiredService<ApplicationSettings>();
-
+                    
                     var tokenValidationResult = await jsonWebTokenHandler
                         .ValidateTokenAsync(key, new TokenValidationParameters
                         {
-                            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.TokenKey)),
+                            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.TokenKey 
+                                ?? throw new ConfigurationMissingException(
+                                    nameof(applicationSettings.TokenKey)))),
                             RequireSignedTokens = true,
                             ValidateIssuer = true,
                             ValidateAudience = true,
                             ValidAudiences = applicationSettings.Audiences,
                             ValidIssuers = applicationSettings.Issuers,
                             RequireExpirationTime = true,
-                            TokenDecryptionKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.EncryptionKey)),
+                            TokenDecryptionKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.EncryptionKey
+                                ?? throw new ConfigurationMissingException(nameof(applicationSettings.EncryptionKey)))),
                         });
 
                     if (tokenValidationResult.IsValid)

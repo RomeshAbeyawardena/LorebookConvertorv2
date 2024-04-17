@@ -1,4 +1,5 @@
 ﻿using Lorebook.Convertor.Domain;
+using Lorebook.Convertor.Domain.Exceptions;
 using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session.Get;
 using MediatR;
@@ -14,8 +15,13 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache, IHt
 {
     private string? CreateToken(SessionData sessionData)
     {
-        var key = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.TokenKey));
-        var encryptionKey = new SymmetricSecurityKey(Convert.FromBase64String(applicationSettings.EncryptionKey));
+        var key = new SymmetricSecurityKey(
+            Convert.FromBase64String(applicationSettings.TokenKey 
+                ?? throw new ConfigurationMissingException(nameof(applicationSettings.TokenKey))));
+        var encryptionKey = new SymmetricSecurityKey(
+            Convert.FromBase64String(applicationSettings.EncryptionKey
+                ?? throw new ConfigurationMissingException(nameof(applicationSettings.EncryptionKey))
+            ));
 
         var localNow = timeProvider.GetLocalNow();
 
@@ -50,7 +56,8 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache, IHt
         DateTimeOffset utcNow;
         if (request.SessionId.HasValue)
         {
-            sessionData = await mediator.Send(new Query { SessionId = request.SessionId.Value }, cancellationToken)
+            sessionData = await mediator.Send(new Query { SessionId = request.SessionId.Value }, 
+                cancellationToken)
                 ?? throw new NullReferenceException("Session not found");
 
             if (!sessionData.IsValid(timeProvider))
