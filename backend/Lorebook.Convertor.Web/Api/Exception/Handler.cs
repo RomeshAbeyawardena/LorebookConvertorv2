@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using Lorebook.Convertor.Domain.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace Lorebook.Convertor.Web.Api.Exception;
 
@@ -8,11 +9,16 @@ public class Handler : IExceptionHandler
     {
         var exceptionCollection = httpContext.RequestServices.GetRequiredService<TypeCollection>();
         var response = httpContext.Response;
-        await response.WriteAsJsonAsync(Result.Error<bool>(exception.Message), cancellationToken);
+        var statusCode = (exception is IStatusCodeException statusCodeException)
+            ? statusCodeException.StatusCode
+            : 500;
+
+        await response.WriteAsJsonAsync(Result.Error<bool>(exception.Message, statusCode), 
+            cancellationToken);
 #if DEBUG
         return false;
 #else
-        return exceptionCollection.Contains(exception);
+        return exceptionCollection.Contains(exception.GetType());
 #endif
     }
 }

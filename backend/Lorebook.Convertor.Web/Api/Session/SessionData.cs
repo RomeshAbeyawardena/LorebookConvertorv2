@@ -1,7 +1,9 @@
-﻿namespace Lorebook.Convertor.Web.Api.Session;
+﻿using Lorebook.Convertor.Domain;
+
+namespace Lorebook.Convertor.Web.Api.Session;
 
 [MessagePack.MessagePackObject(true)]
-public class SessionData
+public class SessionData : ISessionData
 {
     public Guid SessionId { get; set; }
     public string? AntiforgeryToken { get; set; }
