@@ -12,10 +12,9 @@ public static class Endpoint
     {
         var httpContext = contextAccessor.HttpContext ?? throw new NotSupportedException();
 
-        return new OkObjectResult(sessionId.HasValue 
+        return Result.Ok(sessionId.HasValue 
             ? await mediator.Send(new Query {  SessionId = sessionId }, cancellationToken)
-            : httpContext.GetSessionData()
-            );
+            : httpContext.GetSessionData());
     }
     
     public static IEndpointRouteBuilder AddGetSessionEndpoint(this IEndpointRouteBuilder routeBuilder)

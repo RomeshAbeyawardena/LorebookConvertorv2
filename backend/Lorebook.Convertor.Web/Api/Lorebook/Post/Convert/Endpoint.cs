@@ -19,7 +19,7 @@ public static class Endpoint
         }
         
         var file = context.Request.Form.Files[0] ?? throw new NullReferenceException();
-        return new OkObjectResult(await mediator.Send(new Command { 
+        return Result.Ok(await mediator.Send(new Command { 
             File = file, 
             Version = version 
         }, cancellationToken));
