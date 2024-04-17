@@ -12,6 +12,7 @@ public class AntiforgeryTokenSessionData : SessionData
         return new AntiforgeryTokenSessionData
         {
             AntiforgeryToken = sessionData.AntiforgeryToken,
+            WebToken = sessionData.WebToken,
             Created = sessionData.Created,
             Expires = sessionData.Expires,
             Modified = sessionData.Modified,

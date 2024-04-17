@@ -14,8 +14,11 @@ public static class Endpoint
         SessionData session;
         if (!sessionId.HasValue)
         {
-            var context = httpContextAccessor.HttpContext ?? throw new NotSupportedException();
-            var sessionData = context.GetSessionData() ?? throw new UnauthorizedAccessException("Unauthorised request");
+            var context = httpContextAccessor.HttpContext 
+                ?? throw new NotSupportedException();
+            
+            var sessionData = context.GetSessionData() 
+                ?? throw new UnauthorizedAccessException("Unauthorised request");
 
             session = await mediator.Send(new Command
             {
