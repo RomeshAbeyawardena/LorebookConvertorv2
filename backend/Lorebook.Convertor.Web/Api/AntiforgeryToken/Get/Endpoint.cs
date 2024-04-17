@@ -1,4 +1,5 @@
 ﻿using Lorebook.Convertor.Web.Api.Extensions;
+using Lorebook.Convertor.Web.Api.Session;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,15 +11,21 @@ public static class Endpoint
         IHttpContextAccessor httpContextAccessor, IMediator mediator, 
         Guid? sessionId, CancellationToken cancellationToken)
     {
+        SessionData session;
         if (!sessionId.HasValue)
         {
             var context = httpContextAccessor.HttpContext ?? throw new NotSupportedException();
             var sessionData = context.GetSessionData() ?? throw new UnauthorizedAccessException("Unauthorised request");
 
-            return new OkObjectResult(sessionData);
+            session = await mediator.Send(new Command
+            {
+                SessionId = sessionData.SessionId
+            }, cancellationToken);
+
+            return Result.Ok(timeProvider, session);
         }
 
-        var session = await mediator.Send(new Command { 
+        session = await mediator.Send(new Command { 
             SessionId = sessionId }, cancellationToken);
         return Result.Ok(timeProvider, session);
     }
