@@ -30,7 +30,7 @@ public static class Endpoint
         return Result.Ok(timeProvider, session);
     }
 
-    public const string ApiUrl = "api/afg";
+    public const string ApiUrl = "api/aft";
     public static IEndpointRouteBuilder AddAntiforgeryEndpoint(this IEndpointRouteBuilder builder)
     {
         builder.MapGet(ApiUrl, GetAntiforgeryToken);
