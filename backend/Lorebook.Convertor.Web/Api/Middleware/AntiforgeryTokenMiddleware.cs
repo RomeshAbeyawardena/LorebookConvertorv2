@@ -8,13 +8,15 @@ namespace Lorebook.Convertor.Web.Api.Middleware
     {
         public static async Task AntiforgeryTokenHandler(HttpContext context, RequestDelegate requestDelegate)
         {
+            var timeProvider = context.RequestServices.GetRequiredService<TimeProvider>();
+
             try
             {
                 if (context.Request.Headers.TryGetValue("X-AFT", out var antiForgeryValue))
                 {
                     var token = antiForgeryValue.FirstOrDefault();
                     var session = context.Features.Get<SessionData>();
-                    var timeProvider = context.RequestServices.GetRequiredService<TimeProvider>();
+                    
                     if (!string.IsNullOrWhiteSpace(token) && session.IsValid(timeProvider))
                     {
                         if(string.IsNullOrWhiteSpace(session!.AntiforgeryToken))
@@ -36,7 +38,7 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                 || ex is NullReferenceException 
                 || ex is InvalidOperationException)
             {
-                await SessionMiddleware.Fail(context.Response, ex.Message, 401);
+                await SessionMiddleware.Fail(timeProvider, context.Response, ex.Message, 401);
             }
         }
     }

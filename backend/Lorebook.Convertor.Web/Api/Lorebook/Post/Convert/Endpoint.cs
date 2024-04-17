@@ -7,7 +7,8 @@ namespace Lorebook.Convertor.Web.Api.Lorebook.Post.Convert;
 
 public static class Endpoint
 {
-    private static async Task<IActionResult> Convert(IHttpContextAccessor httpContext, IMediator mediator,
+    private static async Task<IActionResult> Convert(TimeProvider timeProvider,
+        IHttpContextAccessor httpContext, IMediator mediator,
          [FromForm]string version, 
         CancellationToken cancellationToken)
     {
@@ -19,7 +20,7 @@ public static class Endpoint
         }
         
         var file = context.Request.Form.Files[0] ?? throw new NullReferenceException();
-        return Result.Ok(await mediator.Send(new Command { 
+        return Result.Ok(timeProvider, await mediator.Send(new Command { 
             File = file, 
             Version = version 
         }, cancellationToken));

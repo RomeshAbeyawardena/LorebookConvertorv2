@@ -10,14 +10,17 @@ namespace Lorebook.Convertor.Web.Api.Middleware;
 
 public static class SessionMiddleware
 {
-    public static async Task Fail(HttpResponse response, string? reason, int statusCode = 401)
+    public static async Task Fail(TimeProvider timeProvider, HttpResponse response, 
+        string? reason, int statusCode = 401)
     {
         response.StatusCode = statusCode;
-        await response.WriteAsJsonAsync(Result.Error<string>($"Authorisation failed: {reason}", statusCode));
+        await response.WriteAsJsonAsync(Result.Error<string>(timeProvider, 
+            $"Authorisation failed: {reason}", statusCode));
     }
 
     public static async Task SessionHandler(HttpContext context, RequestDelegate requestDelegate)
     {
+        var timeProvider = context.RequestServices.GetRequiredService<TimeProvider>();
         var response = context.Response;
         try
         {
@@ -51,8 +54,6 @@ public static class SessionMiddleware
                         if (tokenValidationResult.Claims.TryGetValue("Session-Id", out var sessionId))
                         {
                             var mediator = context.RequestServices.GetRequiredService<IMediator>();
-                            var timeProvider = context.RequestServices.GetRequiredService<TimeProvider>();
-
                             if(!Guid.TryParse(sessionId?.ToString(), out var id))
                             {
                                 throw new InvalidCastException("Invalid claims");
@@ -76,7 +77,7 @@ public static class SessionMiddleware
         }
         catch (UnauthorizedAccessException exception)
         {
-            await Fail(response, exception.Message);
+            await Fail(timeProvider, response, exception.Message);
         }
     }
 

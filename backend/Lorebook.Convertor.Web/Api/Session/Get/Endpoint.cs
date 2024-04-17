@@ -6,13 +6,13 @@ namespace Lorebook.Convertor.Web.Api.Session.Get;
 
 public static class Endpoint
 {
-    private static async Task<IActionResult> GetSession(
+    private static async Task<IActionResult> GetSession(TimeProvider timeProvider,
         IMediator mediator, IHttpContextAccessor contextAccessor,
         Guid? sessionId, CancellationToken cancellationToken)
     {
         var httpContext = contextAccessor.HttpContext ?? throw new NotSupportedException();
 
-        return Result.Ok(sessionId.HasValue 
+        return Result.Ok(timeProvider, sessionId.HasValue 
             ? await mediator.Send(new Query {  SessionId = sessionId }, cancellationToken)
             : httpContext.GetSessionData());
     }

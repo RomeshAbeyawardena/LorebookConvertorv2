@@ -6,7 +6,7 @@ namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 
 public static class Endpoint
 {
-    private static async Task<IActionResult> GetAntiforgeryToken(
+    private static async Task<IActionResult> GetAntiforgeryToken(TimeProvider timeProvider,
         IHttpContextAccessor httpContextAccessor, IMediator mediator, 
         Guid? sessionId, CancellationToken cancellationToken)
     {
@@ -20,7 +20,7 @@ public static class Endpoint
 
         var session = await mediator.Send(new Command { 
             SessionId = sessionId }, cancellationToken);
-        return Result.Ok(session);
+        return Result.Ok(timeProvider, session);
     }
 
     public const string ApiUrl = "api/afg";

@@ -6,21 +6,22 @@ namespace Lorebook.Convertor.Web.Api;
 
 public class Result
 {
-    public static Result<T> Ok<T>(T value)
+    public static Result<T> Ok<T>(TimeProvider timeProvider, T value)
     {
-        return new Result<T>(200, null, value);
+        return new Result<T>(timeProvider, 200, null, value);
     }
 
-    public static Result<T> Error<T>(string message, int statusCode = 400)
+    public static Result<T> Error<T>(TimeProvider timeProvider, string message, int statusCode = 400)
     {
-        return new Result<T>(statusCode, message, default);
+        return new Result<T>(timeProvider, statusCode, message, default);
     }
 
 }
 
-public class Result<T>(int code, string? error = null, T? data = default) 
+public class Result<T>(TimeProvider timeProvider, int code, string? error = null, T? data = default) 
     : IStatusCodeActionResult, IActionResult
 {
+    public DateTimeOffset RequestedTimestampUtc { get; } = timeProvider.GetUtcNow();
     public int Code { get; } = code;
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
