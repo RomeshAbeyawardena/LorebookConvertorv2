@@ -10,8 +10,8 @@ public record ApplicationSettings
     }
 
     public int SessionValidityPeriodInMinutes { get; set; }
-    public IEnumerable<string> Audiences { get; set; }
-    public IEnumerable<string> Issuers { get; set; }
-    public string TokenKey { get; set; }
-    public string EncryptionKey { get; set; }
+    public IEnumerable<string> Audiences { get; set; } = [];
+    public IEnumerable<string> Issuers { get; set; } = [];
+    public string? TokenKey { get; set; }
+    public string? EncryptionKey { get; set; }
 }

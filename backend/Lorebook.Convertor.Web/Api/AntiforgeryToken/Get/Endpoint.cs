@@ -7,11 +7,20 @@ namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 
 public static class Endpoint
 {
-    private static async Task<IActionResult> GetAntiforgeryToken(IHttpContextAccessor httpContextAccessor, IMediator mediator, CancellationToken cancellationToken)
+    private static async Task<IActionResult> GetAntiforgeryToken(
+        IHttpContextAccessor httpContextAccessor, IMediator mediator, 
+        Guid? sessionId, CancellationToken cancellationToken)
     {
-        var context = httpContextAccessor.HttpContext ?? throw new NotSupportedException();
-        var sessionData = context.GetSessionData() ?? throw new UnauthorizedAccessException("Unauthorised request");
-        var session = await mediator.Send(new Command { SessionId = sessionData.SessionId }, cancellationToken);
+        if (!sessionId.HasValue)
+        {
+            var context = httpContextAccessor.HttpContext ?? throw new NotSupportedException();
+            var sessionData = context.GetSessionData() ?? throw new UnauthorizedAccessException("Unauthorised request");
+
+            return new OkObjectResult(sessionData);
+        }
+
+        var session = await mediator.Send(new Command { 
+            SessionId = sessionId }, cancellationToken);
         return new OkObjectResult(session);
     }
 
