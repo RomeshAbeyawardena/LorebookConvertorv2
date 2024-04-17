@@ -28,6 +28,8 @@ public static class ServiceCollectionExtensions
             .AddHttpContextAccessor()
             .AddDistributedMemoryCache()
             .AddAntiForgeryTokenServices()
+            .AddExceptionHandler<Handler>()
+            .AddProblemDetails()
             .AddMediatR(cfg => cfg
                 .RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
     }

@@ -61,14 +61,14 @@ public static class SessionMiddleware
                             var session = await mediator.Send(new Query { SessionId = id });
                             if (!session.IsValid(timeProvider))
                             {
-                                throw new UnauthorizedAccessException("Session expired or invalid");
+                                throw new InvalidOrExpiredSessionException();
                             }
 
                             context.Features.Set(session);
                         }
                     }
                     else
-                        throw new UnauthorizedAccessException("Session expired or invalid");
+                        throw new InvalidOrExpiredSessionException();
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using Lorebook.Convertor.Web.Api.Extensions;
+﻿using Lorebook.Convertor.Domain.Exceptions;
+using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session;
 
 namespace Lorebook.Convertor.Web.Api.Middleware
@@ -18,12 +19,12 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                     {
                         if(string.IsNullOrWhiteSpace(session!.AntiforgeryToken))
                         {
-                            throw new NullReferenceException("Antiforgery token not set");
+                            throw new EntityNotFoundException();
                         }
 
                         if (session.AntiforgeryToken != token)
                         {
-                            throw new UnauthorizedAccessException("Antiforgery token is not valid");
+                            throw new InvalidOrExpiredAntiForgeryException();
                         }
                     }
                 }
@@ -31,7 +32,9 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                 context.Items.Add("AntiforgerytokenValidated", true);
                 await requestDelegate(context);
             }
-            catch (System.Exception ex ) when (ex is UnauthorizedAccessException || ex is NullReferenceException || ex is InvalidOperationException)
+            catch (System.Exception ex ) when (ex is UnauthorizedAccessException 
+                || ex is NullReferenceException 
+                || ex is InvalidOperationException)
             {
                 await SessionMiddleware.Fail(context.Response, ex.Message, 401);
             }

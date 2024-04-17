@@ -18,7 +18,7 @@ public class Handler : IExceptionHandler
 #if DEBUG
         return false;
 #else
-        return exceptionCollection.Contains(exception.GetType());
+        return statusCode != 500 || exceptionCollection.Contains(exception.GetType());
 #endif
     }
 }
