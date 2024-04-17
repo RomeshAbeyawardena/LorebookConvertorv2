@@ -1,4 +1,5 @@
-﻿using Lorebook.Convertor.Web.Api.Extensions;
+﻿using Lorebook.Convertor.Domain.Exceptions;
+using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session;
 using Lorebook.Convertor.Web.Api.Session.Get;
 using MediatR;
@@ -13,11 +14,11 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache,
     public async Task<AntiforgeryTokenSessionData> Handle(Command request, CancellationToken cancellationToken)
     {
         var session = await mediator.Send(new Query { SessionId = request.SessionId }, cancellationToken) 
-            ?? throw new NullReferenceException("Session not found");
+            ?? throw new InvalidOrExpiredSessionException();
 
         if(!session.IsValid(timeProvider))
         {
-            throw new UnauthorizedAccessException("Session expired");
+            throw new InvalidOrExpiredSessionException();
         }
 
         var tokens = antiforgery.GetTokens(httpContext.HttpContext ?? throw new InvalidOperationException());
