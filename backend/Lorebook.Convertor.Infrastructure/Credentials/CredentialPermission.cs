@@ -8,4 +8,5 @@ public class CredentialPermission
     public DateTimeOffset? ValidFrom { get; set; }
     public DateTimeOffset? ValidTo { get; set; }
     public virtual Credential? Credential { get; set; }
+    public virtual Permissions.Permission? Permission { get; set; }
 }
