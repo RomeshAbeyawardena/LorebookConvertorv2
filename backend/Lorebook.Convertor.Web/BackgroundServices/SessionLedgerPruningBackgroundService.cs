@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace Lorebook.Convertor.Web.BackgroundServices;
 
 public class SessionLedgerPruningBackgroundService(ISessionLedger sessionLedger, 
-    IDistributedCache distributedCache) : BackgroundService
+    IDistributedCache distributedCache, ApplicationSettings applicationSettings) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -15,7 +15,7 @@ public class SessionLedgerPruningBackgroundService(ISessionLedger sessionLedger,
                 await sessionLedger.RemoveExpired(distributedCache, stoppingToken);
             }
 
-            await Task.Delay(10000, stoppingToken);
+            await Task.Delay(applicationSettings.BackgroundServiceTimeoutInterval, stoppingToken);
         }
     }
 }

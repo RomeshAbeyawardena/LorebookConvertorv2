@@ -9,6 +9,7 @@ public record ApplicationSettings
         configuration.Bind(this);
     }
 
+    public int BackgroundServiceTimeoutInterval { get; set; }
     public int SessionValidityPeriodInMinutes { get; set; }
     public IEnumerable<string> Audiences { get; set; } = [];
     public IEnumerable<string> Issuers { get; set; } = [];
