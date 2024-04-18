@@ -8,6 +8,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Lorebook.Convertor.Web.Api.Middleware;
 
+public class SessionMiddlewareInstance
+{
+
+}
+
 public static class SessionMiddleware
 {
     public static async Task Fail(TimeProvider timeProvider, HttpResponse response, 
@@ -20,7 +25,9 @@ public static class SessionMiddleware
 
     public static async Task SessionHandler(HttpContext context, RequestDelegate requestDelegate)
     {
-        var timeProvider = context.RequestServices.GetRequiredService<TimeProvider>();
+        var requestServices = context.RequestServices;
+        var logger = requestServices.GetRequiredService<ILogger<SessionMiddlewareInstance>>();
+        var timeProvider = requestServices.GetRequiredService<TimeProvider>();
         var response = context.Response;
         try
         {
@@ -30,7 +37,7 @@ public static class SessionMiddleware
                 if (!string.IsNullOrWhiteSpace(key))
                 {
                     var jsonWebTokenHandler = new JsonWebTokenHandler();
-                    var applicationSettings = context.RequestServices
+                    var applicationSettings = requestServices
                         .GetRequiredService<ApplicationSettings>();
                     
                     var tokenValidationResult = await jsonWebTokenHandler
@@ -78,6 +85,8 @@ public static class SessionMiddleware
         catch (System.Exception exception) 
             when (exception is IStatusCodeException statusCodeException)
         {
+            logger.LogError(exception, "Session middleware failed to execute: {message}", 
+                exception.Message);
             await Fail(timeProvider, response, exception.Message, statusCodeException.StatusCode);
         }
     }

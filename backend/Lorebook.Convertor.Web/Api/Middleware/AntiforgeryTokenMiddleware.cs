@@ -6,12 +6,15 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace Lorebook.Convertor.Web.Api.Middleware
 {
+    public class AntiforgeryTokenMiddlewareInstance { };
+
     public static class AntiforgeryTokenMiddleware
     {
         public static async Task AntiforgeryTokenHandler(HttpContext context, RequestDelegate requestDelegate)
         {
-            var timeProvider = context.RequestServices.GetRequiredService<TimeProvider>();
-
+            var requestServices = context.RequestServices;
+            var timeProvider = requestServices.GetRequiredService<TimeProvider>();
+            var logger = requestServices.GetRequiredService<ILogger<AntiforgeryTokenMiddlewareInstance>>();
             try
             {
                 if (context.Request.Headers.TryGetValue("X-AFT", out var antiForgeryValue))
@@ -31,11 +34,12 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                             throw new InvalidOrExpiredAntiForgeryException();
                         }
 
-                        var distributedCache = context.RequestServices
+                        var distributedCache = requestServices
                             .GetRequiredService<IDistributedCache>();
 
-                        await distributedCache.CommitSessionData(
-                            context.RequestServices.GetRequiredService<ISessionLedger>(),
+                        session.AntiforgeryToken = null;
+
+                        await distributedCache.CommitSessionData(null,
                             session, CancellationToken.None);
 
                         context.Items.Add("AntiForgeryTokenValidated", true);
@@ -44,11 +48,13 @@ namespace Lorebook.Convertor.Web.Api.Middleware
 
                 await requestDelegate(context);
             }
-            catch (System.Exception ex)
-                when (ex is IStatusCodeException statusCodeException)
+            catch (System.Exception exception)
+                when (exception is IStatusCodeException statusCodeException)
             {
+                logger.LogError(exception, "Session middleware failed to execute: {message}", 
+                    exception.Message);
                 await SessionMiddleware
-                    .Fail(timeProvider, context.Response, ex.Message, 
+                    .Fail(timeProvider, context.Response, exception.Message, 
                         statusCodeException.StatusCode);
             }
         }

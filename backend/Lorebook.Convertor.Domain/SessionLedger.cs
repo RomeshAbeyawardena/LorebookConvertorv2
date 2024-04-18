@@ -10,6 +10,7 @@ public class SessionLedger(TimeProvider timeProvider) : ISessionLedger
     public ISessionLedger Add(ISessionLedgerEntry entry)
     {
         ledgerEntries.TryAdd(entry.Key, entry);
+        
         return this;
     }
 
