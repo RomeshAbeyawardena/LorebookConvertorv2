@@ -23,16 +23,19 @@ public class SessionLedger(TimeProvider timeProvider) : ISessionLedger
         return ValueTask.FromResult(this.Any(l => l.Expiry < timeProvider.GetUtcNow()));
     }
 
-    public async Task RemoveExpired(IDistributedCache distributedCache, CancellationToken cancellationToken)
+    public async Task<int> RemoveExpired(IDistributedCache distributedCache, CancellationToken cancellationToken)
     {
         Queue<ISessionLedgerEntry> removalQueue = new (this
             .Where(l => l.Expiry < timeProvider.GetUtcNow()));
-
+        int itemsRemoved = 0;
         while (removalQueue.TryDequeue(out var sessionLedgerEntry))
         {
+            itemsRemoved++;
             await distributedCache.RemoveAsync(sessionLedgerEntry.Key, cancellationToken);
             ledgerEntries.TryRemove(sessionLedgerEntry.Key, out _);
         }
+
+        return itemsRemoved;
     }
 
     IEnumerator IEnumerable.GetEnumerator()
