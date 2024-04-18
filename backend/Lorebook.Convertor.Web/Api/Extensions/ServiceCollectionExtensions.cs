@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
                 typeof(UnauthorizedAccessException)))
             .AddSingleton(TimeProvider.System)
             .AddSingleton<ApplicationSettings>()
+            .AddSingleton<ISessionLedger, SessionLedger>()
             .AddHttpContextAccessor()
             .AddDistributedMemoryCache()
             .AddAntiForgeryTokenServices()
