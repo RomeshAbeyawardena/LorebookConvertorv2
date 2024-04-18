@@ -10,7 +10,8 @@ using System.Security.Claims;
 
 namespace Lorebook.Convertor.Web.Api.Session.Post.SetSession;
 
-public class Handler(IMediator mediator, IDistributedCache distributedCache, IHttpContextAccessor httpContextAccessor,
+public class Handler(IMediator mediator, IDistributedCache distributedCache, 
+    IHttpContextAccessor httpContextAccessor, ISessionLedger sessionLedger,
     ApplicationSettings applicationSettings, TimeProvider timeProvider) : IRequestHandler<Command, SessionData>
 {
     private string? CreateToken(SessionData sessionData)
@@ -47,7 +48,7 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache, IHt
         sessionData.Modified = utcNow;
         sessionData.Expires = utcNow.AddMinutes(applicationSettings.SessionValidityPeriodInMinutes);
         sessionData.WebToken = CreateToken(sessionData);
-        await distributedCache.CommitSessionData(sessionData, cancellationToken);
+        await distributedCache.CommitSessionData(null, sessionData, cancellationToken);
     }
 
     public async Task<SessionData> Handle(Command request, CancellationToken cancellationToken)
@@ -85,7 +86,7 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache, IHt
         sessionData.Created = utcNow;
         sessionData.WebToken = CreateToken(sessionData);
 
-        await distributedCache.CommitSessionData(sessionData, cancellationToken);
+        await distributedCache.CommitSessionData(sessionLedger, sessionData, cancellationToken);
         return sessionData;
     }
 }

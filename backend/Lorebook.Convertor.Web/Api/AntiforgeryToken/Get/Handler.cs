@@ -1,4 +1,5 @@
-﻿using Lorebook.Convertor.Domain.Exceptions;
+﻿using Lorebook.Convertor.Domain;
+using Lorebook.Convertor.Domain.Exceptions;
 using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session;
 using Lorebook.Convertor.Web.Api.Session.Get;
@@ -8,7 +9,7 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace Lorebook.Convertor.Web.Api.AntiforgeryToken.Get;
 
-public class Handler(IMediator mediator, IDistributedCache distributedCache, 
+public class Handler(IMediator mediator, IDistributedCache distributedCache, ISessionLedger sessionLedger, 
     IAntiforgery antiforgery, IHttpContextAccessor httpContext, TimeProvider timeProvider) : IRequestHandler<Command, AntiforgeryTokenSessionData>
 {
     public async Task<AntiforgeryTokenSessionData> Handle(Command request, CancellationToken cancellationToken)
@@ -25,7 +26,7 @@ public class Handler(IMediator mediator, IDistributedCache distributedCache,
         session.AntiforgeryToken = tokens.RequestToken;
         var utcNow = timeProvider.GetUtcNow();
         session.Modified = utcNow;
-        await distributedCache.CommitSessionData(session, cancellationToken);
+        await distributedCache.CommitSessionData(sessionLedger, session, cancellationToken);
 
         var token = AntiforgeryTokenSessionData.From(session);
         token.CookieName = tokens.CookieToken;

@@ -1,11 +1,6 @@
-﻿namespace Lorebook.Convertor.Domain;
+﻿using Microsoft.Extensions.Caching.Distributed;
 
-public interface ISessionLedgerEntry
-{
-    Guid SessionId { get; set; }
-    string Key { get; set; }
-    DateTimeOffset Expiry { get; set; }
-}
+namespace Lorebook.Convertor.Domain;
 
 public interface ISessionLedger : IEnumerable<ISessionLedgerEntry>
 {

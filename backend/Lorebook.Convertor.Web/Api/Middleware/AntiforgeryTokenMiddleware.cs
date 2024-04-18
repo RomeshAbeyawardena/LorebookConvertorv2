@@ -1,4 +1,5 @@
-﻿using Lorebook.Convertor.Domain.Exceptions;
+﻿using Lorebook.Convertor.Domain;
+using Lorebook.Convertor.Domain.Exceptions;
 using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session;
 using Microsoft.Extensions.Caching.Distributed;
@@ -33,7 +34,9 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                         var distributedCache = context.RequestServices
                             .GetRequiredService<IDistributedCache>();
 
-                        await distributedCache.CommitSessionData(session, CancellationToken.None);
+                        await distributedCache.CommitSessionData(
+                            context.RequestServices.GetRequiredService<ISessionLedger>(),
+                            session, CancellationToken.None);
 
                         context.Items.Add("AntiForgeryTokenValidated", true);
                     }
