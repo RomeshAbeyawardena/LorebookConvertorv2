@@ -56,7 +56,7 @@ public static class SessionMiddleware
                             var mediator = context.RequestServices.GetRequiredService<IMediator>();
                             if(!Guid.TryParse(sessionId?.ToString(), out var id))
                             {
-                                throw new InvalidCastException("Invalid claims");
+                                throw new InvalidClaimsException("Invalid claims");
                             }
 
                             var session = await mediator.Send(new Query { SessionId = id });
@@ -75,10 +75,10 @@ public static class SessionMiddleware
 
             await requestDelegate(context);
         }
-        catch (UnauthorizedAccessException exception)
+        catch (System.Exception exception) 
+            when (exception is IStatusCodeException statusCodeException)
         {
-            await Fail(timeProvider, response, exception.Message);
+            await Fail(timeProvider, response, exception.Message, statusCodeException.StatusCode);
         }
     }
-
 }

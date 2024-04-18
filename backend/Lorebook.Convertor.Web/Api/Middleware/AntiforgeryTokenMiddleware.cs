@@ -31,14 +31,15 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                     }
                 }
 
-                context.Items.Add("AntiforgerytokenValidated", true);
+                context.Items.Add("AntiForgeryTokenValidated", true);
                 await requestDelegate(context);
             }
-            catch (System.Exception ex ) when (ex is InvalidOrExpiredAntiForgeryException
-                || ex is EntityNotFoundException
-                || ex is InvalidOperationException)
+            catch (System.Exception ex)
+                when (ex is IStatusCodeException statusCodeException)
             {
-                await SessionMiddleware.Fail(timeProvider, context.Response, ex.Message, 401);
+                await SessionMiddleware
+                    .Fail(timeProvider, context.Response, ex.Message, 
+                        statusCodeException.StatusCode);
             }
         }
     }
