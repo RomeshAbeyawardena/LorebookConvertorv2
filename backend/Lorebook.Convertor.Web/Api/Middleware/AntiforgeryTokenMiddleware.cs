@@ -1,6 +1,7 @@
 ﻿using Lorebook.Convertor.Domain.Exceptions;
 using Lorebook.Convertor.Web.Api.Extensions;
 using Lorebook.Convertor.Web.Api.Session;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Lorebook.Convertor.Web.Api.Middleware
 {
@@ -28,10 +29,16 @@ namespace Lorebook.Convertor.Web.Api.Middleware
                         {
                             throw new InvalidOrExpiredAntiForgeryException();
                         }
+
+                        var distributedCache = context.RequestServices
+                            .GetRequiredService<IDistributedCache>();
+
+                        await distributedCache.CommitSessionData(session, CancellationToken.None);
+
+                        context.Items.Add("AntiForgeryTokenValidated", true);
                     }
                 }
 
-                context.Items.Add("AntiForgeryTokenValidated", true);
                 await requestDelegate(context);
             }
             catch (System.Exception ex)
