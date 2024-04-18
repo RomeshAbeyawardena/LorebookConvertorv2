@@ -3,7 +3,8 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace Lorebook.Convertor.Web.BackgroundServices;
 
-public class SessionLedgerPruningBackgroundService(ISessionLedger sessionLedger, IDistributedCache distributedCache) : BackgroundService
+public class SessionLedgerPruningBackgroundService(ISessionLedger sessionLedger, 
+    IDistributedCache distributedCache) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
