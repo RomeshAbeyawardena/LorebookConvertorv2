@@ -13,7 +13,7 @@ public class Handler : IExceptionHandler
         var statusCode = (exception is IStatusCodeException statusCodeException)
             ? statusCodeException.StatusCode
             : 500;
-
+        response.StatusCode = statusCode;
         await response.WriteAsJsonAsync(Result.Error<bool>(timeProvider, exception.Message, statusCode), 
             cancellationToken);
 #if DEBUG
