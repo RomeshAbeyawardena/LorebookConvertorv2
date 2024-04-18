@@ -24,13 +24,18 @@ public record Lorebook
 
 public class DeserialisedLorebook
 {
-    public static Lorebook? ParseJson(string fileName, JsonSerializerOptions? options = null)
+    public static Lorebook? ParseJson(Stream stream, JsonSerializerOptions? options = null)
     {
         options ??= new(JsonSerializerDefaults.Web);
 
         return Lorebook.From(JsonSerializer
-                .Deserialize<DeserialisedLorebook>(File
-                    .OpenRead(fileName), options));
+                .Deserialize<DeserialisedLorebook>(stream, options));
+    }
+
+    public static Lorebook? ParseJson(string fileName, JsonSerializerOptions? options = null)
+    {
+        return ParseJson(File
+                    .OpenRead(fileName), options);
     }
 
     public IEnumerable<LorebookEntry> Entries { get; set; } = [];
