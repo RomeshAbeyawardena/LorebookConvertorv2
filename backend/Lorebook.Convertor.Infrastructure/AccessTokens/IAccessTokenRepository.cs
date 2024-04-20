@@ -1,11 +1,6 @@
-﻿namespace Lorebook.Convertor.Infrastructure.AccessTokens;
+﻿using HSINet.Shared.Transactional;
 
-public interface IRepository<T>
-    where T: class
-{
-    Task<T> Find(CancellationToken cancellationToken, params object[] keys);
-    Task<T> Upsert(AccessToken accessToken, CancellationToken cancellationToken);
-}
+namespace Lorebook.Convertor.Infrastructure.AccessTokens;
 
 public interface IAccessTokenRepository : IRepository<AccessToken>
 {

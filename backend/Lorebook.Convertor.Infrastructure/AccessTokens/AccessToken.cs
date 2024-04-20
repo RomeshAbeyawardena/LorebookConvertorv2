@@ -1,11 +1,13 @@
-﻿namespace Lorebook.Convertor.Infrastructure.AccessTokens;
+﻿using HSINet.Shared.EntityAttributes;
 
-public class AccessToken
+namespace Lorebook.Convertor.Infrastructure.AccessTokens;
+
+public class AccessToken : IIdentity, ICreated
 {
     /// <summary>
     /// Gets or sets the unique identifier of the access token.
     /// </summary>
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
 
     /// <summary>
     /// Gets or sets the unique identifier of the credential associated with the access token.
@@ -38,4 +40,6 @@ public class AccessToken
     public virtual Credentials.Credential? Credential { get; set; }
 
     public virtual ICollection<AccessTokenPermission> Permissions { get; set; } = [];
+    
+    public DateTimeOffset Created { get; set; }
 }
